@@ -1,5 +1,5 @@
 syntax = "proto3";
-package setting;
+package setting.v1;
 option go_package = "/pkg";
 
 service Setting {}
