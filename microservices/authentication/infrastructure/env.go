@@ -5,7 +5,7 @@ import (
 )
 
 func Load() {
-	viper.SetConfigFile("./microservices/authentication/.env")
+	viper.SetConfigFile(".env")
 	viper.AutomaticEnv()
 	err := viper.ReadInConfig()
 	if err != nil {

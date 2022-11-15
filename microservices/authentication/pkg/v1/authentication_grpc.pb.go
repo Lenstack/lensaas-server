@@ -2,7 +2,7 @@
 // versions:
 // - protoc-gen-go-grpc v1.2.0
 // - protoc             (unknown)
-// source: authentication.proto
+// source: v1/authentication.proto
 
 package pkg
 
@@ -25,6 +25,7 @@ type AuthenticationClient interface {
 	SignIn(ctx context.Context, in *SignInRequest, opts ...grpc.CallOption) (*SignInResponse, error)
 	SignUp(ctx context.Context, in *SignUpRequest, opts ...grpc.CallOption) (*SignUpResponse, error)
 	SignOut(ctx context.Context, in *SignOutRequest, opts ...grpc.CallOption) (*SignOutResponse, error)
+	RefreshToken(ctx context.Context, in *RefreshTokenRequest, opts ...grpc.CallOption) (Authentication_RefreshTokenClient, error)
 }
 
 type authenticationClient struct {
@@ -37,7 +38,7 @@ func NewAuthenticationClient(cc grpc.ClientConnInterface) AuthenticationClient {
 
 func (c *authenticationClient) SignIn(ctx context.Context, in *SignInRequest, opts ...grpc.CallOption) (*SignInResponse, error) {
 	out := new(SignInResponse)
-	err := c.cc.Invoke(ctx, "/authentication.Authentication/SignIn", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/authentication.v1.Authentication/SignIn", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -46,7 +47,7 @@ func (c *authenticationClient) SignIn(ctx context.Context, in *SignInRequest, op
 
 func (c *authenticationClient) SignUp(ctx context.Context, in *SignUpRequest, opts ...grpc.CallOption) (*SignUpResponse, error) {
 	out := new(SignUpResponse)
-	err := c.cc.Invoke(ctx, "/authentication.Authentication/SignUp", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/authentication.v1.Authentication/SignUp", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -55,11 +56,43 @@ func (c *authenticationClient) SignUp(ctx context.Context, in *SignUpRequest, op
 
 func (c *authenticationClient) SignOut(ctx context.Context, in *SignOutRequest, opts ...grpc.CallOption) (*SignOutResponse, error) {
 	out := new(SignOutResponse)
-	err := c.cc.Invoke(ctx, "/authentication.Authentication/SignOut", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/authentication.v1.Authentication/SignOut", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
+}
+
+func (c *authenticationClient) RefreshToken(ctx context.Context, in *RefreshTokenRequest, opts ...grpc.CallOption) (Authentication_RefreshTokenClient, error) {
+	stream, err := c.cc.NewStream(ctx, &Authentication_ServiceDesc.Streams[0], "/authentication.v1.Authentication/RefreshToken", opts...)
+	if err != nil {
+		return nil, err
+	}
+	x := &authenticationRefreshTokenClient{stream}
+	if err := x.ClientStream.SendMsg(in); err != nil {
+		return nil, err
+	}
+	if err := x.ClientStream.CloseSend(); err != nil {
+		return nil, err
+	}
+	return x, nil
+}
+
+type Authentication_RefreshTokenClient interface {
+	Recv() (*RefreshTokenResponse, error)
+	grpc.ClientStream
+}
+
+type authenticationRefreshTokenClient struct {
+	grpc.ClientStream
+}
+
+func (x *authenticationRefreshTokenClient) Recv() (*RefreshTokenResponse, error) {
+	m := new(RefreshTokenResponse)
+	if err := x.ClientStream.RecvMsg(m); err != nil {
+		return nil, err
+	}
+	return m, nil
 }
 
 // AuthenticationServer is the server API for Authentication service.
@@ -69,6 +102,7 @@ type AuthenticationServer interface {
 	SignIn(context.Context, *SignInRequest) (*SignInResponse, error)
 	SignUp(context.Context, *SignUpRequest) (*SignUpResponse, error)
 	SignOut(context.Context, *SignOutRequest) (*SignOutResponse, error)
+	RefreshToken(*RefreshTokenRequest, Authentication_RefreshTokenServer) error
 	mustEmbedUnimplementedAuthenticationServer()
 }
 
@@ -84,6 +118,9 @@ func (UnimplementedAuthenticationServer) SignUp(context.Context, *SignUpRequest)
 }
 func (UnimplementedAuthenticationServer) SignOut(context.Context, *SignOutRequest) (*SignOutResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method SignOut not implemented")
+}
+func (UnimplementedAuthenticationServer) RefreshToken(*RefreshTokenRequest, Authentication_RefreshTokenServer) error {
+	return status.Errorf(codes.Unimplemented, "method RefreshToken not implemented")
 }
 func (UnimplementedAuthenticationServer) mustEmbedUnimplementedAuthenticationServer() {}
 
@@ -108,7 +145,7 @@ func _Authentication_SignIn_Handler(srv interface{}, ctx context.Context, dec fu
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/authentication.Authentication/SignIn",
+		FullMethod: "/authentication.v1.Authentication/SignIn",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(AuthenticationServer).SignIn(ctx, req.(*SignInRequest))
@@ -126,7 +163,7 @@ func _Authentication_SignUp_Handler(srv interface{}, ctx context.Context, dec fu
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/authentication.Authentication/SignUp",
+		FullMethod: "/authentication.v1.Authentication/SignUp",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(AuthenticationServer).SignUp(ctx, req.(*SignUpRequest))
@@ -144,7 +181,7 @@ func _Authentication_SignOut_Handler(srv interface{}, ctx context.Context, dec f
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/authentication.Authentication/SignOut",
+		FullMethod: "/authentication.v1.Authentication/SignOut",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(AuthenticationServer).SignOut(ctx, req.(*SignOutRequest))
@@ -152,11 +189,32 @@ func _Authentication_SignOut_Handler(srv interface{}, ctx context.Context, dec f
 	return interceptor(ctx, in, info, handler)
 }
 
+func _Authentication_RefreshToken_Handler(srv interface{}, stream grpc.ServerStream) error {
+	m := new(RefreshTokenRequest)
+	if err := stream.RecvMsg(m); err != nil {
+		return err
+	}
+	return srv.(AuthenticationServer).RefreshToken(m, &authenticationRefreshTokenServer{stream})
+}
+
+type Authentication_RefreshTokenServer interface {
+	Send(*RefreshTokenResponse) error
+	grpc.ServerStream
+}
+
+type authenticationRefreshTokenServer struct {
+	grpc.ServerStream
+}
+
+func (x *authenticationRefreshTokenServer) Send(m *RefreshTokenResponse) error {
+	return x.ServerStream.SendMsg(m)
+}
+
 // Authentication_ServiceDesc is the grpc.ServiceDesc for Authentication service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
 var Authentication_ServiceDesc = grpc.ServiceDesc{
-	ServiceName: "authentication.Authentication",
+	ServiceName: "authentication.v1.Authentication",
 	HandlerType: (*AuthenticationServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
@@ -172,6 +230,12 @@ var Authentication_ServiceDesc = grpc.ServiceDesc{
 			Handler:    _Authentication_SignOut_Handler,
 		},
 	},
-	Streams:  []grpc.StreamDesc{},
-	Metadata: "authentication.proto",
+	Streams: []grpc.StreamDesc{
+		{
+			StreamName:    "RefreshToken",
+			Handler:       _Authentication_RefreshToken_Handler,
+			ServerStreams: true,
+		},
+	},
+	Metadata: "v1/authentication.proto",
 }

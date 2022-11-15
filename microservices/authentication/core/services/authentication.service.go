@@ -3,7 +3,7 @@ package services
 import (
 	"github.com/Lenstack/clean-grpc-microservices-gateway-ui/tree/master/microservices/authentication/core/entities"
 	"github.com/Lenstack/clean-grpc-microservices-gateway-ui/tree/master/microservices/authentication/core/repositories"
-	"github.com/Lenstack/clean-grpc-microservices-gateway-ui/tree/master/microservices/authentication/utils"
+	"github.com/Lenstack/clean-grpc-microservices-gateway-ui/tree/master/microservices/authentication/util"
 	"github.com/Masterminds/squirrel"
 	"github.com/go-redis/redis/v9"
 	"github.com/google/uuid"
@@ -21,11 +21,11 @@ type IAuthenticationService interface {
 type AuthenticationService struct {
 	authenticationRepository repositories.AuthenticationRepository
 	redisRepository          repositories.RedisRepository
-	jwtManager               utils.JwtManager
-	bcryptManager            utils.BcryptManager
+	jwtManager               util.JwtManager
+	bcryptManager            util.BcryptManager
 }
 
-func NewAuthenticationService(database squirrel.StatementBuilderType, redisManager *redis.Client, jwtManager utils.JwtManager) *AuthenticationService {
+func NewAuthenticationService(database squirrel.StatementBuilderType, redisManager *redis.Client, jwtManager util.JwtManager) *AuthenticationService {
 	return &AuthenticationService{
 		authenticationRepository: repositories.AuthenticationRepository{
 			Database: database,

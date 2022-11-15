@@ -1,5 +1,5 @@
 syntax = "proto3";
-package authentication;
+package authentication.v1;
 option go_package = "/pkg";
 
 //The authentication service is responsible for handling user authentication.

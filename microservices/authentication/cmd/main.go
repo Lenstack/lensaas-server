@@ -4,7 +4,7 @@ import (
 	"github.com/Lenstack/clean-grpc-microservices-gateway-ui/tree/master/microservices/authentication/core/applications"
 	"github.com/Lenstack/clean-grpc-microservices-gateway-ui/tree/master/microservices/authentication/core/services"
 	"github.com/Lenstack/clean-grpc-microservices-gateway-ui/tree/master/microservices/authentication/infrastructure"
-	"github.com/Lenstack/clean-grpc-microservices-gateway-ui/tree/master/microservices/authentication/utils"
+	"github.com/Lenstack/clean-grpc-microservices-gateway-ui/tree/master/microservices/authentication/util"
 	"github.com/spf13/viper"
 )
 
@@ -35,7 +35,7 @@ func main() {
 
 	redis := infrastructure.NewRedisManager(RedisHost, RedisPort, RedisPassword, loggerManager.Logger)
 
-	jwtManager := utils.NewJwtManager(JwtSecret, JwtExpiration)
+	jwtManager := util.NewJwtManager(JwtSecret, JwtExpiration)
 
 	authenticationService := services.NewAuthenticationService(postgres.Database, redis.Client, *jwtManager)
 	middlewareApplication := applications.NewMiddlewareApplication(loggerManager.Logger)
