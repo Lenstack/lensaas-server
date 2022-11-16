@@ -2,4 +2,17 @@ syntax = "proto3";
 package setting.v1;
 option go_package = "/pkg";
 
-service Setting {}
+// Setting is a configuration setting.
+service Setting {
+  rpc CreateSetting(CreateSettingRequest) returns (CreateSettingResponse);
+}
+
+message CreateSettingRequest {
+  string name = 1;
+  string value = 2;
+}
+
+message CreateSettingResponse {
+  string name = 1;
+  string value = 2;
+}
