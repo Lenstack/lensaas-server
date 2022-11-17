@@ -1,4 +1,3 @@
-# Path: microservices\authentication\dockerfile
 # Get Golang Version 1.19-alpine
 FROM golang:1.19-alpine AS builder
 # Set the Current Working Directory inside the container
@@ -16,9 +15,4 @@ EXPOSE 8080
 # Command to run the executable
 ENTRYPOINT ["/microservice/authentication_microservice"]
 
-
-
-
-
-
-
+# Path: microservices\authentication\docker-compose.yml
