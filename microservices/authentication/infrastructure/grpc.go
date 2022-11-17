@@ -3,6 +3,9 @@ package infrastructure
 import (
 	"github.com/Lenstack/clean-grpc-microservices-gateway-ui/tree/master/microservices/authentication/core/applications"
 	"github.com/Lenstack/clean-grpc-microservices-gateway-ui/tree/master/microservices/authentication/pkg/v1"
+	"github.com/grpc-ecosystem/go-grpc-middleware"
+	"github.com/grpc-ecosystem/go-grpc-middleware/logging/zap"
+	"github.com/grpc-ecosystem/go-grpc-middleware/recovery"
 	"go.uber.org/zap"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/reflection"
@@ -24,8 +27,14 @@ func NewGrpcServer(port string, microservices applications.MicroserviceServer, l
 	}
 
 	grpcServer := grpc.NewServer(
-		grpc.UnaryInterceptor(microservices.MiddlewareApplication.GrpcUnaryInterceptor),
-		grpc.StreamInterceptor(microservices.MiddlewareApplication.GrpcStreamInterceptor),
+		grpc.UnaryInterceptor(grpc_middleware.ChainUnaryServer(
+			grpc_zap.UnaryServerInterceptor(loggerManager),
+			grpc_recovery.UnaryServerInterceptor(),
+		)),
+		grpc.StreamInterceptor(grpc_middleware.ChainStreamServer(
+			grpc_zap.StreamServerInterceptor(loggerManager),
+			grpc_recovery.StreamServerInterceptor(),
+		)),
 	)
 	pkg.RegisterAuthenticationServer(grpcServer, &microservices)
 	reflection.Register(grpcServer)
