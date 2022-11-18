@@ -6,6 +6,9 @@ services:
     container_name: microservice_authentication
     ports:
       - "5000:5000"
+    depends_on:
+      - postgres
+      - redis
     environment:
       - ENVIRONMENT=development
       - GRPC_PORT=5000
@@ -27,13 +30,13 @@ services:
       - "6379:6379"
     environment:
       - REDIS_PASSWORD=redis
-      - REDIS_HOST=redis
   postgres:
     image: postgres:latest
     container_name: postgres_server
     ports:
-      - "5432:5432"
+      - "49153:5432"
+    hostname: postgres_server
+    networks:
+      - default
     environment:
-      POSTGRES_PASSWORD: password
-      POSTGRES_USER: postgres
-      POSTGRES_DB: postgres
+      - POSTGRES_PASSWORD=postgres
