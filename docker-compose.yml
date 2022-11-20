@@ -1,0 +1,55 @@
+version: "3.8"
+services:
+  ### ===================
+  ### MICROSERVICE
+  ### ===================
+  authentication-microservice:
+    build: microservices/authentication
+    container_name: microservice_authentication
+    ports:
+      - "5000:5000"
+    networks:
+      - authentication_network
+    depends_on:
+      - postgres
+      - redis
+    env_file:
+      - microservices/authentication/.env
+  ### ===================
+  ### REDIS SERVICE
+  ### ===================
+  redis:
+    image: redis/redis-stack-server:latest
+    container_name: redis_server
+    ports:
+      - "6379:6379"
+    networks:
+      - authentication_network
+    env_file:
+      - microservices/authentication/.env
+  ### ===================
+  ### POSTGRES SERVICE
+  ### ===================
+  postgres:
+    image: postgres:latest
+    restart: always
+    container_name: postgres_server
+    ports:
+      - "5432:5432"
+    networks:
+      - authentication_network
+    env_file:
+      - microservices/authentication/.env
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+  ### ========================
+  ### VOLUMES PERSISTENT DATA
+  ### ========================
+volumes:
+  postgres_data:
+  ### ===================================
+  ### NETWORKS GROUP FOR ONE SAME SERVICE
+  ### ===================================
+networks:
+  authentication_network:
+    driver: bridge
