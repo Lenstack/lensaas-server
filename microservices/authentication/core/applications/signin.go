@@ -6,9 +6,9 @@ import (
 )
 
 func (ms *MicroserviceServer) SignIn(ctx context.Context, req *pkg.SignInRequest) (*pkg.SignInResponse, error) {
-	token, err := ms.AuthenticationService.SignIn(req.Email, req.Password)
+	accessToken, expiration, err := ms.AuthenticationService.SignIn(req.GetEmail(), req.GetPassword())
 	if err != nil {
 		return nil, err
 	}
-	return &pkg.SignInResponse{Token: token}, nil
+	return &pkg.SignInResponse{AccessToken: accessToken, Expiration: expiration}, nil
 }

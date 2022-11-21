@@ -44,10 +44,29 @@
         }
       }
     },
+    "v1DeleteAccountResponse": {
+      "type": "object",
+      "properties": {
+        "Message": {
+          "type": "string"
+        }
+      }
+    },
     "v1RefreshTokenResponse": {
       "type": "object",
       "properties": {
-        "token": {
+        "AccessToken": {
+          "type": "string"
+        },
+        "Expiration": {
+          "type": "string"
+        }
+      }
+    },
+    "v1ResetPasswordResponse": {
+      "type": "object",
+      "properties": {
+        "Message": {
           "type": "string"
         }
       }
@@ -55,7 +74,10 @@
     "v1SignInResponse": {
       "type": "object",
       "properties": {
-        "token": {
+        "AccessToken": {
+          "type": "string"
+        },
+        "Expiration": {
           "type": "string"
         }
       }
@@ -63,7 +85,7 @@
     "v1SignOutResponse": {
       "type": "object",
       "properties": {
-        "message": {
+        "Message": {
           "type": "string"
         }
       }
@@ -71,7 +93,15 @@
     "v1SignUpResponse": {
       "type": "object",
       "properties": {
-        "token": {
+        "Message": {
+          "type": "string"
+        }
+      }
+    },
+    "v1VerifyEmailResponse": {
+      "type": "object",
+      "properties": {
+        "Message": {
           "type": "string"
         }
       }

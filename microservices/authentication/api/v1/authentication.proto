@@ -3,44 +3,74 @@ package authentication.v1;
 option go_package = "/pkg";
 
 //The authentication service is responsible for handling user authentication.
-//It provides the following methods: SignIn, SignUp, SignOut, RefreshToken.
+//It provides the following methods: SignIn, SignUp, SignOut, VerifyToken, ResetPassword, DeleteAccount, RefreshToken.
 service Authentication {
   rpc SignIn (SignInRequest) returns (SignInResponse);
   rpc SignUp (SignUpRequest) returns (SignUpResponse);
   rpc SignOut (SignOutRequest) returns (SignOutResponse);
+  rpc VerifyEmail (VerifyEmailRequest) returns (VerifyEmailResponse);
+  rpc ResetPassword (ResetPasswordRequest) returns (ResetPasswordResponse);
+  rpc DeleteAccount (DeleteAccountRequest) returns (DeleteAccountResponse);
   rpc RefreshToken (RefreshTokenRequest) returns (stream RefreshTokenResponse);
 }
 
 message SignInRequest {
-  string email = 1;
-  string password = 2;
+  string Email = 1;
+  string Password = 2;
 }
 
 message SignInResponse {
-  string token = 1;
+  string AccessToken = 1;
+  string Expiration = 2;
 }
 
 message SignUpRequest {
-  string email = 1;
-  string password = 2;
+  string Email = 1;
+  string Password = 2;
 }
 
 message SignUpResponse {
-  string token = 1;
+  string Message = 1;
 }
 
 message SignOutRequest {
-  string token = 1;
+  string AccessToken = 1;
 }
 
 message SignOutResponse {
-  string message = 1;
+  string Message = 1;
+}
+
+message VerifyEmailRequest {
+  string Code = 1;
+}
+
+message VerifyEmailResponse {
+  string Message = 1;
+}
+
+message ResetPasswordRequest {
+  string Code = 1;
+  string Password = 2;
+}
+
+message ResetPasswordResponse {
+  string Message = 1;
+}
+
+message DeleteAccountRequest {
+  string Password = 1;
+}
+
+message DeleteAccountResponse {
+  string Message = 1;
 }
 
 message RefreshTokenRequest {
-  string token = 1;
+  string AccessToken = 1;
 }
 
 message RefreshTokenResponse {
-  string token = 1;
+  string AccessToken = 1;
+  string Expiration = 2;
 }

@@ -6,7 +6,7 @@ import (
 )
 
 func (ms *MicroserviceServer) SignOut(ctx context.Context, req *pkg.SignOutRequest) (*pkg.SignOutResponse, error) {
-	message, err := ms.AuthenticationService.SignOut(req.GetToken())
+	message, err := ms.AuthenticationService.SignOut(req.GetAccessToken())
 	if err != nil {
 		return nil, err
 	}
