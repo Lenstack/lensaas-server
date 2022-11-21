@@ -23,7 +23,6 @@ func main() {
 		RedisPort                = viper.Get("REDIS_PORT").(string)
 		RedisPassword            = viper.Get("REDIS_PASSWORD").(string)
 		JwtSecret                = viper.Get("JWT_SECRET").(string)
-		JwtExpiration            = viper.Get("JWT_EXPIRATION").(string)
 	)
 
 	loggerManager := infrastructure.NewLoggerManager(Environment)
@@ -35,7 +34,7 @@ func main() {
 
 	redis := infrastructure.NewRedisManager(RedisHost, RedisPort, RedisPassword, loggerManager.Logger)
 
-	jwtManager := util.NewJwtManager(JwtSecret, JwtExpiration)
+	jwtManager := util.NewJwtManager(JwtSecret)
 
 	authenticationService := services.NewAuthenticationService(postgres.Database, redis.Client, *jwtManager)
 	middlewareApplication := applications.NewMiddlewareApplication(loggerManager.Logger)

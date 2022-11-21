@@ -11,19 +11,17 @@ type IJwtManager interface {
 }
 
 type JwtManager struct {
-	secret     string
-	expiration string
+	secret string
 }
 
-func NewJwtManager(secret string, expiration string) *JwtManager {
-	return &JwtManager{secret: secret, expiration: expiration}
+func NewJwtManager(secret string) *JwtManager {
+	return &JwtManager{secret: secret}
 }
 
-func (jm *JwtManager) GenerateToken(userId string) (token string, err error) {
-	expirationTime, err := time.ParseDuration(jm.expiration)
+func (jm *JwtManager) GenerateToken(userId string, expiration time.Duration) (token string, err error) {
 	claims := jwt.MapClaims{
 		"id":  userId,
-		"exp": time.Now().Add(expirationTime).Unix(),
+		"exp": time.Now().Add(expiration).Unix(),
 	}
 	return jwt.NewWithClaims(jwt.SigningMethodHS256, claims).SignedString([]byte(jm.secret))
 }
