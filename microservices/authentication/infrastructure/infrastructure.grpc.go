@@ -39,7 +39,7 @@ func NewGrpcServer(port string, microservices applications.MicroserviceServer, l
 	pkg.RegisterAuthenticationServer(grpcServer, &microservices)
 	reflection.Register(grpcServer)
 
-	loggerManager.Sugar().Infof("gRPC server listening on port %s", port)
+	loggerManager.Sugar().Infof("GRPC server listening on port %s", port)
 	err = grpcServer.Serve(listenServer)
 	if err != nil {
 		loggerManager.Sugar().Errorf("failed to serve: %v", err)

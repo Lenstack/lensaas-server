@@ -12,6 +12,8 @@ service Authentication {
   rpc ResetPassword (ResetPasswordRequest) returns (ResetPasswordResponse);
   rpc DeleteAccount (DeleteAccountRequest) returns (DeleteAccountResponse);
   rpc RefreshToken (RefreshTokenRequest) returns (stream RefreshTokenResponse);
+  rpc Enable2FA (Enable2FARequest) returns (Enable2FAResponse);
+  rpc Disable2FA (Disable2FARequest) returns (Disable2FAResponse);
 }
 
 message SignInRequest {
@@ -73,4 +75,22 @@ message RefreshTokenRequest {
 message RefreshTokenResponse {
   string AccessToken = 1;
   string Expiration = 2;
+}
+
+message Enable2FARequest {
+  string Password = 1;
+}
+
+message Enable2FAResponse {
+  string Secret = 1;
+  string QRCode = 2;
+}
+
+message Disable2FARequest {
+  string Password = 1;
+  string Code = 2;
+}
+
+message Disable2FAResponse {
+  string Message = 1;
 }

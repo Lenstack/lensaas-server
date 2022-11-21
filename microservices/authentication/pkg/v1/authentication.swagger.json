@@ -52,6 +52,25 @@
         }
       }
     },
+    "v1Disable2FAResponse": {
+      "type": "object",
+      "properties": {
+        "Message": {
+          "type": "string"
+        }
+      }
+    },
+    "v1Enable2FAResponse": {
+      "type": "object",
+      "properties": {
+        "Secret": {
+          "type": "string"
+        },
+        "QRCode": {
+          "type": "string"
+        }
+      }
+    },
     "v1RefreshTokenResponse": {
       "type": "object",
       "properties": {

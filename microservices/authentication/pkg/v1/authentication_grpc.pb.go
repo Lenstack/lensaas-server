@@ -29,6 +29,8 @@ type AuthenticationClient interface {
 	ResetPassword(ctx context.Context, in *ResetPasswordRequest, opts ...grpc.CallOption) (*ResetPasswordResponse, error)
 	DeleteAccount(ctx context.Context, in *DeleteAccountRequest, opts ...grpc.CallOption) (*DeleteAccountResponse, error)
 	RefreshToken(ctx context.Context, in *RefreshTokenRequest, opts ...grpc.CallOption) (Authentication_RefreshTokenClient, error)
+	Enable2FA(ctx context.Context, in *Enable2FARequest, opts ...grpc.CallOption) (*Enable2FAResponse, error)
+	Disable2FA(ctx context.Context, in *Disable2FARequest, opts ...grpc.CallOption) (*Disable2FAResponse, error)
 }
 
 type authenticationClient struct {
@@ -125,6 +127,24 @@ func (x *authenticationRefreshTokenClient) Recv() (*RefreshTokenResponse, error)
 	return m, nil
 }
 
+func (c *authenticationClient) Enable2FA(ctx context.Context, in *Enable2FARequest, opts ...grpc.CallOption) (*Enable2FAResponse, error) {
+	out := new(Enable2FAResponse)
+	err := c.cc.Invoke(ctx, "/authentication.v1.Authentication/Enable2FA", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *authenticationClient) Disable2FA(ctx context.Context, in *Disable2FARequest, opts ...grpc.CallOption) (*Disable2FAResponse, error) {
+	out := new(Disable2FAResponse)
+	err := c.cc.Invoke(ctx, "/authentication.v1.Authentication/Disable2FA", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // AuthenticationServer is the server API for Authentication service.
 // All implementations must embed UnimplementedAuthenticationServer
 // for forward compatibility
@@ -136,6 +156,8 @@ type AuthenticationServer interface {
 	ResetPassword(context.Context, *ResetPasswordRequest) (*ResetPasswordResponse, error)
 	DeleteAccount(context.Context, *DeleteAccountRequest) (*DeleteAccountResponse, error)
 	RefreshToken(*RefreshTokenRequest, Authentication_RefreshTokenServer) error
+	Enable2FA(context.Context, *Enable2FARequest) (*Enable2FAResponse, error)
+	Disable2FA(context.Context, *Disable2FARequest) (*Disable2FAResponse, error)
 	mustEmbedUnimplementedAuthenticationServer()
 }
 
@@ -163,6 +185,12 @@ func (UnimplementedAuthenticationServer) DeleteAccount(context.Context, *DeleteA
 }
 func (UnimplementedAuthenticationServer) RefreshToken(*RefreshTokenRequest, Authentication_RefreshTokenServer) error {
 	return status.Errorf(codes.Unimplemented, "method RefreshToken not implemented")
+}
+func (UnimplementedAuthenticationServer) Enable2FA(context.Context, *Enable2FARequest) (*Enable2FAResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method Enable2FA not implemented")
+}
+func (UnimplementedAuthenticationServer) Disable2FA(context.Context, *Disable2FARequest) (*Disable2FAResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method Disable2FA not implemented")
 }
 func (UnimplementedAuthenticationServer) mustEmbedUnimplementedAuthenticationServer() {}
 
@@ -306,6 +334,42 @@ func (x *authenticationRefreshTokenServer) Send(m *RefreshTokenResponse) error {
 	return x.ServerStream.SendMsg(m)
 }
 
+func _Authentication_Enable2FA_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(Enable2FARequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(AuthenticationServer).Enable2FA(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/authentication.v1.Authentication/Enable2FA",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(AuthenticationServer).Enable2FA(ctx, req.(*Enable2FARequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Authentication_Disable2FA_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(Disable2FARequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(AuthenticationServer).Disable2FA(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/authentication.v1.Authentication/Disable2FA",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(AuthenticationServer).Disable2FA(ctx, req.(*Disable2FARequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // Authentication_ServiceDesc is the grpc.ServiceDesc for Authentication service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -336,6 +400,14 @@ var Authentication_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "DeleteAccount",
 			Handler:    _Authentication_DeleteAccount_Handler,
+		},
+		{
+			MethodName: "Enable2FA",
+			Handler:    _Authentication_Enable2FA_Handler,
+		},
+		{
+			MethodName: "Disable2FA",
+			Handler:    _Authentication_Disable2FA_Handler,
 		},
 	},
 	Streams: []grpc.StreamDesc{
