@@ -10,7 +10,7 @@ type LoggerManager struct {
 }
 
 func NewLoggerManager(environment string) *LoggerManager {
-	if strings.ToLower(environment) == "prod" {
+	if strings.ToLower(environment) == "production" {
 		logger, _ := zap.NewProduction()
 		defer logger.Sync()
 		return &LoggerManager{Logger: logger}
