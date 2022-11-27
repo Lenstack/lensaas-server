@@ -11,11 +11,12 @@ This is a starter template for building your saas with microservices with the ne
     - [ ] `Sign in`
     - [ ] `Get sessions`
     - [ ] `Revoke session`
-    - [ ] `Verify email`
     - [ ] `Reset password`
+    - [ ] `Change password`
     - [ ] `Refresh token`
     - [ ] `Enable 2fa`
     - [ ] `Disable 2fa`
+    - [ ] `Verify account`
     - [ ] `Delete account`
 - [ ] `Billing`
 - [ ] `Customer`
@@ -24,6 +25,9 @@ This is a starter template for building your saas with microservices with the ne
 - [ ] `Settings`
 - [ ] `Storage`
 - [ ] `Tenant`
+- [ ] `Profile`
+    - [ ] `Get profile`
+    - [ ] `Update profile`
 
 ### UI
 
