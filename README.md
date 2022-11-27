@@ -7,17 +7,15 @@ This is a starter template for building your saas with microservices with the ne
 ### Microservices
 
 - [ ] `Authentication` - in progress
-    - [x] `Signup`
-    - [ ] `Signin`
-    - [ ] `Get token sessions`
-    - [ ] `Revoke token session`
+    - [x] `Sign up`
+    - [ ] `Sign in`
+    - [ ] `Get sessions`
+    - [ ] `Revoke session`
     - [ ] `Verify email`
     - [ ] `Reset password`
     - [ ] `Refresh token`
     - [ ] `Enable 2fa`
     - [ ] `Disable 2fa`
-    - [ ] `Get Profile`
-    - [ ] `Update Profile`
     - [ ] `Delete account`
 - [ ] `Billing`
 - [ ] `Customer`
