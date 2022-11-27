@@ -7,13 +7,15 @@ option go_package = "/pkg";
 service Authentication {
   rpc SignIn (SignInRequest) returns (SignInResponse);
   rpc SignUp (SignUpRequest) returns (SignUpResponse);
-  rpc SignOut (SignOutRequest) returns (SignOutResponse);
-  rpc VerifyEmail (VerifyEmailRequest) returns (VerifyEmailResponse);
+  rpc GetSessions (GetSessionsRequest) returns (GetSessionsResponse);
+  rpc RevokeSession (RevokeSessionRequest) returns (RevokeSessionResponse);
   rpc ResetPassword (ResetPasswordRequest) returns (ResetPasswordResponse);
-  rpc DeleteAccount (DeleteAccountRequest) returns (DeleteAccountResponse);
+  rpc ChangePassword (ChangePasswordRequest) returns (ChangePasswordResponse);
   rpc RefreshToken (RefreshTokenRequest) returns (stream RefreshTokenResponse);
   rpc Enable2FA (Enable2FARequest) returns (Enable2FAResponse);
   rpc Disable2FA (Disable2FARequest) returns (Disable2FAResponse);
+  rpc VerifyAccount (VerifyAccountRequest) returns (VerifyAccountResponse);
+  rpc DeleteAccount (DeleteAccountRequest) returns (DeleteAccountResponse);
 }
 
 message SignInRequest {
@@ -35,19 +37,30 @@ message SignUpResponse {
   string Message = 1;
 }
 
-message SignOutRequest {
+message GetSessionsRequest {
   string AccessToken = 1;
 }
 
-message SignOutResponse {
+message GetSessionsResponse {
+  repeated string Sessions = 1;
+}
+
+message RevokeSessionRequest {
+  string AccessToken = 1;
+  string SessionID = 2;
+}
+
+message RevokeSessionResponse {
   string Message = 1;
 }
 
-message VerifyEmailRequest {
-  string Code = 1;
+message ChangePasswordRequest {
+  string AccessToken = 1;
+  string OldPassword = 2;
+  string NewPassword = 3;
 }
 
-message VerifyEmailResponse {
+message ChangePasswordResponse {
   string Message = 1;
 }
 
@@ -92,5 +105,13 @@ message Disable2FARequest {
 }
 
 message Disable2FAResponse {
+  string Message = 1;
+}
+
+message VerifyAccountRequest {
+  string Code = 1;
+}
+
+message VerifyAccountResponse {
   string Message = 1;
 }

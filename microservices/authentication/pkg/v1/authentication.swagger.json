@@ -44,6 +44,14 @@
         }
       }
     },
+    "v1ChangePasswordResponse": {
+      "type": "object",
+      "properties": {
+        "Message": {
+          "type": "string"
+        }
+      }
+    },
     "v1DeleteAccountResponse": {
       "type": "object",
       "properties": {
@@ -71,6 +79,17 @@
         }
       }
     },
+    "v1GetSessionsResponse": {
+      "type": "object",
+      "properties": {
+        "Sessions": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    },
     "v1RefreshTokenResponse": {
       "type": "object",
       "properties": {
@@ -90,6 +109,14 @@
         }
       }
     },
+    "v1RevokeSessionResponse": {
+      "type": "object",
+      "properties": {
+        "Message": {
+          "type": "string"
+        }
+      }
+    },
     "v1SignInResponse": {
       "type": "object",
       "properties": {
@@ -97,14 +124,6 @@
           "type": "string"
         },
         "Expiration": {
-          "type": "string"
-        }
-      }
-    },
-    "v1SignOutResponse": {
-      "type": "object",
-      "properties": {
-        "Message": {
           "type": "string"
         }
       }
@@ -117,7 +136,7 @@
         }
       }
     },
-    "v1VerifyEmailResponse": {
+    "v1VerifyAccountResponse": {
       "type": "object",
       "properties": {
         "Message": {

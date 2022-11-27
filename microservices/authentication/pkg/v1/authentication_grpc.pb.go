@@ -24,13 +24,15 @@ const _ = grpc.SupportPackageIsVersion7
 type AuthenticationClient interface {
 	SignIn(ctx context.Context, in *SignInRequest, opts ...grpc.CallOption) (*SignInResponse, error)
 	SignUp(ctx context.Context, in *SignUpRequest, opts ...grpc.CallOption) (*SignUpResponse, error)
-	SignOut(ctx context.Context, in *SignOutRequest, opts ...grpc.CallOption) (*SignOutResponse, error)
-	VerifyEmail(ctx context.Context, in *VerifyEmailRequest, opts ...grpc.CallOption) (*VerifyEmailResponse, error)
+	GetSessions(ctx context.Context, in *GetSessionsRequest, opts ...grpc.CallOption) (*GetSessionsResponse, error)
+	RevokeSession(ctx context.Context, in *RevokeSessionRequest, opts ...grpc.CallOption) (*RevokeSessionResponse, error)
 	ResetPassword(ctx context.Context, in *ResetPasswordRequest, opts ...grpc.CallOption) (*ResetPasswordResponse, error)
-	DeleteAccount(ctx context.Context, in *DeleteAccountRequest, opts ...grpc.CallOption) (*DeleteAccountResponse, error)
+	ChangePassword(ctx context.Context, in *ChangePasswordRequest, opts ...grpc.CallOption) (*ChangePasswordResponse, error)
 	RefreshToken(ctx context.Context, in *RefreshTokenRequest, opts ...grpc.CallOption) (Authentication_RefreshTokenClient, error)
 	Enable2FA(ctx context.Context, in *Enable2FARequest, opts ...grpc.CallOption) (*Enable2FAResponse, error)
 	Disable2FA(ctx context.Context, in *Disable2FARequest, opts ...grpc.CallOption) (*Disable2FAResponse, error)
+	VerifyAccount(ctx context.Context, in *VerifyAccountRequest, opts ...grpc.CallOption) (*VerifyAccountResponse, error)
+	DeleteAccount(ctx context.Context, in *DeleteAccountRequest, opts ...grpc.CallOption) (*DeleteAccountResponse, error)
 }
 
 type authenticationClient struct {
@@ -59,18 +61,18 @@ func (c *authenticationClient) SignUp(ctx context.Context, in *SignUpRequest, op
 	return out, nil
 }
 
-func (c *authenticationClient) SignOut(ctx context.Context, in *SignOutRequest, opts ...grpc.CallOption) (*SignOutResponse, error) {
-	out := new(SignOutResponse)
-	err := c.cc.Invoke(ctx, "/authentication.v1.Authentication/SignOut", in, out, opts...)
+func (c *authenticationClient) GetSessions(ctx context.Context, in *GetSessionsRequest, opts ...grpc.CallOption) (*GetSessionsResponse, error) {
+	out := new(GetSessionsResponse)
+	err := c.cc.Invoke(ctx, "/authentication.v1.Authentication/GetSessions", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *authenticationClient) VerifyEmail(ctx context.Context, in *VerifyEmailRequest, opts ...grpc.CallOption) (*VerifyEmailResponse, error) {
-	out := new(VerifyEmailResponse)
-	err := c.cc.Invoke(ctx, "/authentication.v1.Authentication/VerifyEmail", in, out, opts...)
+func (c *authenticationClient) RevokeSession(ctx context.Context, in *RevokeSessionRequest, opts ...grpc.CallOption) (*RevokeSessionResponse, error) {
+	out := new(RevokeSessionResponse)
+	err := c.cc.Invoke(ctx, "/authentication.v1.Authentication/RevokeSession", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -86,9 +88,9 @@ func (c *authenticationClient) ResetPassword(ctx context.Context, in *ResetPassw
 	return out, nil
 }
 
-func (c *authenticationClient) DeleteAccount(ctx context.Context, in *DeleteAccountRequest, opts ...grpc.CallOption) (*DeleteAccountResponse, error) {
-	out := new(DeleteAccountResponse)
-	err := c.cc.Invoke(ctx, "/authentication.v1.Authentication/DeleteAccount", in, out, opts...)
+func (c *authenticationClient) ChangePassword(ctx context.Context, in *ChangePasswordRequest, opts ...grpc.CallOption) (*ChangePasswordResponse, error) {
+	out := new(ChangePasswordResponse)
+	err := c.cc.Invoke(ctx, "/authentication.v1.Authentication/ChangePassword", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -145,19 +147,39 @@ func (c *authenticationClient) Disable2FA(ctx context.Context, in *Disable2FAReq
 	return out, nil
 }
 
+func (c *authenticationClient) VerifyAccount(ctx context.Context, in *VerifyAccountRequest, opts ...grpc.CallOption) (*VerifyAccountResponse, error) {
+	out := new(VerifyAccountResponse)
+	err := c.cc.Invoke(ctx, "/authentication.v1.Authentication/VerifyAccount", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *authenticationClient) DeleteAccount(ctx context.Context, in *DeleteAccountRequest, opts ...grpc.CallOption) (*DeleteAccountResponse, error) {
+	out := new(DeleteAccountResponse)
+	err := c.cc.Invoke(ctx, "/authentication.v1.Authentication/DeleteAccount", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // AuthenticationServer is the server API for Authentication service.
 // All implementations must embed UnimplementedAuthenticationServer
 // for forward compatibility
 type AuthenticationServer interface {
 	SignIn(context.Context, *SignInRequest) (*SignInResponse, error)
 	SignUp(context.Context, *SignUpRequest) (*SignUpResponse, error)
-	SignOut(context.Context, *SignOutRequest) (*SignOutResponse, error)
-	VerifyEmail(context.Context, *VerifyEmailRequest) (*VerifyEmailResponse, error)
+	GetSessions(context.Context, *GetSessionsRequest) (*GetSessionsResponse, error)
+	RevokeSession(context.Context, *RevokeSessionRequest) (*RevokeSessionResponse, error)
 	ResetPassword(context.Context, *ResetPasswordRequest) (*ResetPasswordResponse, error)
-	DeleteAccount(context.Context, *DeleteAccountRequest) (*DeleteAccountResponse, error)
+	ChangePassword(context.Context, *ChangePasswordRequest) (*ChangePasswordResponse, error)
 	RefreshToken(*RefreshTokenRequest, Authentication_RefreshTokenServer) error
 	Enable2FA(context.Context, *Enable2FARequest) (*Enable2FAResponse, error)
 	Disable2FA(context.Context, *Disable2FARequest) (*Disable2FAResponse, error)
+	VerifyAccount(context.Context, *VerifyAccountRequest) (*VerifyAccountResponse, error)
+	DeleteAccount(context.Context, *DeleteAccountRequest) (*DeleteAccountResponse, error)
 	mustEmbedUnimplementedAuthenticationServer()
 }
 
@@ -171,17 +193,17 @@ func (UnimplementedAuthenticationServer) SignIn(context.Context, *SignInRequest)
 func (UnimplementedAuthenticationServer) SignUp(context.Context, *SignUpRequest) (*SignUpResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method SignUp not implemented")
 }
-func (UnimplementedAuthenticationServer) SignOut(context.Context, *SignOutRequest) (*SignOutResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method SignOut not implemented")
+func (UnimplementedAuthenticationServer) GetSessions(context.Context, *GetSessionsRequest) (*GetSessionsResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetSessions not implemented")
 }
-func (UnimplementedAuthenticationServer) VerifyEmail(context.Context, *VerifyEmailRequest) (*VerifyEmailResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method VerifyEmail not implemented")
+func (UnimplementedAuthenticationServer) RevokeSession(context.Context, *RevokeSessionRequest) (*RevokeSessionResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method RevokeSession not implemented")
 }
 func (UnimplementedAuthenticationServer) ResetPassword(context.Context, *ResetPasswordRequest) (*ResetPasswordResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ResetPassword not implemented")
 }
-func (UnimplementedAuthenticationServer) DeleteAccount(context.Context, *DeleteAccountRequest) (*DeleteAccountResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method DeleteAccount not implemented")
+func (UnimplementedAuthenticationServer) ChangePassword(context.Context, *ChangePasswordRequest) (*ChangePasswordResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ChangePassword not implemented")
 }
 func (UnimplementedAuthenticationServer) RefreshToken(*RefreshTokenRequest, Authentication_RefreshTokenServer) error {
 	return status.Errorf(codes.Unimplemented, "method RefreshToken not implemented")
@@ -191,6 +213,12 @@ func (UnimplementedAuthenticationServer) Enable2FA(context.Context, *Enable2FARe
 }
 func (UnimplementedAuthenticationServer) Disable2FA(context.Context, *Disable2FARequest) (*Disable2FAResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Disable2FA not implemented")
+}
+func (UnimplementedAuthenticationServer) VerifyAccount(context.Context, *VerifyAccountRequest) (*VerifyAccountResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method VerifyAccount not implemented")
+}
+func (UnimplementedAuthenticationServer) DeleteAccount(context.Context, *DeleteAccountRequest) (*DeleteAccountResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method DeleteAccount not implemented")
 }
 func (UnimplementedAuthenticationServer) mustEmbedUnimplementedAuthenticationServer() {}
 
@@ -241,38 +269,38 @@ func _Authentication_SignUp_Handler(srv interface{}, ctx context.Context, dec fu
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Authentication_SignOut_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(SignOutRequest)
+func _Authentication_GetSessions_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetSessionsRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(AuthenticationServer).SignOut(ctx, in)
+		return srv.(AuthenticationServer).GetSessions(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/authentication.v1.Authentication/SignOut",
+		FullMethod: "/authentication.v1.Authentication/GetSessions",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(AuthenticationServer).SignOut(ctx, req.(*SignOutRequest))
+		return srv.(AuthenticationServer).GetSessions(ctx, req.(*GetSessionsRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Authentication_VerifyEmail_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(VerifyEmailRequest)
+func _Authentication_RevokeSession_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(RevokeSessionRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(AuthenticationServer).VerifyEmail(ctx, in)
+		return srv.(AuthenticationServer).RevokeSession(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/authentication.v1.Authentication/VerifyEmail",
+		FullMethod: "/authentication.v1.Authentication/RevokeSession",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(AuthenticationServer).VerifyEmail(ctx, req.(*VerifyEmailRequest))
+		return srv.(AuthenticationServer).RevokeSession(ctx, req.(*RevokeSessionRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -295,20 +323,20 @@ func _Authentication_ResetPassword_Handler(srv interface{}, ctx context.Context,
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Authentication_DeleteAccount_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(DeleteAccountRequest)
+func _Authentication_ChangePassword_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ChangePasswordRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(AuthenticationServer).DeleteAccount(ctx, in)
+		return srv.(AuthenticationServer).ChangePassword(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/authentication.v1.Authentication/DeleteAccount",
+		FullMethod: "/authentication.v1.Authentication/ChangePassword",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(AuthenticationServer).DeleteAccount(ctx, req.(*DeleteAccountRequest))
+		return srv.(AuthenticationServer).ChangePassword(ctx, req.(*ChangePasswordRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -370,6 +398,42 @@ func _Authentication_Disable2FA_Handler(srv interface{}, ctx context.Context, de
 	return interceptor(ctx, in, info, handler)
 }
 
+func _Authentication_VerifyAccount_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(VerifyAccountRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(AuthenticationServer).VerifyAccount(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/authentication.v1.Authentication/VerifyAccount",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(AuthenticationServer).VerifyAccount(ctx, req.(*VerifyAccountRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Authentication_DeleteAccount_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(DeleteAccountRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(AuthenticationServer).DeleteAccount(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/authentication.v1.Authentication/DeleteAccount",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(AuthenticationServer).DeleteAccount(ctx, req.(*DeleteAccountRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // Authentication_ServiceDesc is the grpc.ServiceDesc for Authentication service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -386,20 +450,20 @@ var Authentication_ServiceDesc = grpc.ServiceDesc{
 			Handler:    _Authentication_SignUp_Handler,
 		},
 		{
-			MethodName: "SignOut",
-			Handler:    _Authentication_SignOut_Handler,
+			MethodName: "GetSessions",
+			Handler:    _Authentication_GetSessions_Handler,
 		},
 		{
-			MethodName: "VerifyEmail",
-			Handler:    _Authentication_VerifyEmail_Handler,
+			MethodName: "RevokeSession",
+			Handler:    _Authentication_RevokeSession_Handler,
 		},
 		{
 			MethodName: "ResetPassword",
 			Handler:    _Authentication_ResetPassword_Handler,
 		},
 		{
-			MethodName: "DeleteAccount",
-			Handler:    _Authentication_DeleteAccount_Handler,
+			MethodName: "ChangePassword",
+			Handler:    _Authentication_ChangePassword_Handler,
 		},
 		{
 			MethodName: "Enable2FA",
@@ -408,6 +472,14 @@ var Authentication_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "Disable2FA",
 			Handler:    _Authentication_Disable2FA_Handler,
+		},
+		{
+			MethodName: "VerifyAccount",
+			Handler:    _Authentication_VerifyAccount_Handler,
+		},
+		{
+			MethodName: "DeleteAccount",
+			Handler:    _Authentication_DeleteAccount_Handler,
 		},
 	},
 	Streams: []grpc.StreamDesc{
