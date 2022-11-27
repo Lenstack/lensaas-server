@@ -30,4 +30,4 @@ This is a starter template for building your saas with microservices with the ne
 
 - [ ] `web`
 
-![img.png](https://cdn.dribbble.com/userupload/3669199/file/original-1a08cbf1360b29afa02aeb3e0df7330c.jpg?compress=1&resize=1600x1200)
+![img.png](https://cdn.dribbble.com/users/3454560/screenshots/17013308/media/bdda4f203d7d368a207b5ac6d230cdc7.png)
