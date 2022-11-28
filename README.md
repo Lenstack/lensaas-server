@@ -4,6 +4,10 @@ This is a starter template for building your saas with microservices with the ne
 
 > gRPC - GraphQl Gateway - Clean Architecture - Docker - Kafka - Redis - Postgres
 
+### Architecture
+
+![](Architecture.png)
+
 ### Microservices
 
 - [ ] `Authentication` - in progress
