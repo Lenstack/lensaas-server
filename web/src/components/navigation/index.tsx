@@ -10,6 +10,14 @@ export default function Navigation({children}: any) {
     )
 }
 
+Navigation.Container = function NavigationContainer({children}: any) {
+    return (
+        <div>
+            {children}
+        </div>
+    )
+}
+
 Navigation.Item = function NavigationItem({href, children}: any) {
     return (
         <li>
