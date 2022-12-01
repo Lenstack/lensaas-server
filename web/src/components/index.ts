@@ -1,1 +1,1 @@
-export {default as Navigation} from "./navigation"
+export {Navigation} from "./navigation"
