@@ -1,18 +1,19 @@
 import {Navigation} from "@/components";
+import {HOME_LINKS} from "@/constants";
 
 export const HomeHeader = () => {
     return (
-        <header className="text-gray-900 font-normal bg-gray-100">
-            <Navigation className="m-3 flex justify-around p-7">
-                <Navigation.Container className={"flex justify-between gap-5"}>
-                    <Navigation.Item href="/">Logo</Navigation.Item>
-                    <Navigation.Item href="/">Features</Navigation.Item>
-                    <Navigation.Item href="/">Pricing</Navigation.Item>
-                    <Navigation.Item href="/">Contact</Navigation.Item>
+        <header className="mx-auto py-10">
+            <Navigation className="relative flex justify-around mx-auto max-w-7xl font-thin">
+                <Navigation.Container className={"flex items-center gap-5"}>
+                    {
+                        HOME_LINKS.map(({id, title, url}) => (
+                            <Navigation.Item key={id} href={url}>{title}</Navigation.Item>
+                        ))
+                    }
                 </Navigation.Container>
-                <Navigation.Container className={"flex justify-between gap-5"}>
-                    <Navigation.Item href="/dashboard">Dashboard</Navigation.Item>
-                    <Navigation.Item href="/">Sign In</Navigation.Item>
+                <Navigation.Container className={"flex items-center gap-5"}>
+                    <Navigation.Item href="/dashboard">Sign In</Navigation.Item>
                     <Navigation.Item href="/">Sign Up</Navigation.Item>
                 </Navigation.Container>
             </Navigation>
