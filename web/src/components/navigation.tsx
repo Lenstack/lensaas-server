@@ -2,7 +2,7 @@ import Link from "next/link";
 
 export const Navigation = ({children, ...restProps}: any) => {
     return (
-        <nav className="container mx-auto" {...restProps}>
+        <nav {...restProps}>
             {children}
         </nav>
     )
@@ -10,13 +10,13 @@ export const Navigation = ({children, ...restProps}: any) => {
 
 Navigation.Item = ({children, href}: any) => {
     return (
-        <Link href={href} className="no-underline">{children}</Link>
+        <Link href={href}>{children}</Link>
     )
 }
 
 Navigation.Button = ({children, ...restProps}: any) => {
     return (
-        <button className="" {...restProps}>
+        <button {...restProps}>
             {children}
         </button>
     )
@@ -24,7 +24,7 @@ Navigation.Button = ({children, ...restProps}: any) => {
 
 Navigation.Container = ({children, ...restProps}: any) => {
     return (
-        <div className="flex gap-5" {...restProps}>
+        <div {...restProps}>
             {children}
         </div>
     )

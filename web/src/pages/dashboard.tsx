@@ -1,9 +1,10 @@
+import {DashboardAside, DashboardHeader} from "@/containers";
+
 export default function Dashboard() {
     return (
-        <div className="container mx-auto">
-            <h1 className="text-2xl font-bold">
-                Dashboard
-            </h1>
+        <div className={" grid grid-cols-12 grid-flow-row auto-rows-max gap-4"}>
+            <DashboardHeader/>
+            <DashboardAside/>
         </div>
     )
 }
