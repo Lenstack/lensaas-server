@@ -4,6 +4,7 @@
 @tailwind components;
 @tailwind utilities;
 
-html {
+html, body {
     font-family: 'Varela', sans-serif;
+    font-size: 14px;
 }

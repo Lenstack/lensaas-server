@@ -2,7 +2,7 @@ import {DashboardAside, DashboardHeader} from "@/containers";
 
 export default function Dashboard() {
     return (
-        <div className={" grid grid-cols-12 grid-flow-row auto-rows-max gap-4"}>
+        <div className={"bg-gradient-to-b from-gray-100 to-gray-300 min-h-screen overflow-hidden"}>
             <DashboardHeader/>
             <DashboardAside/>
         </div>

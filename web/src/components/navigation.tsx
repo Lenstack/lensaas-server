@@ -8,17 +8,9 @@ export const Navigation = ({children, ...restProps}: any) => {
     )
 }
 
-Navigation.Item = ({children, href}: any) => {
+Navigation.Item = ({children, href, ...restProps}: any) => {
     return (
-        <Link href={href}>{children}</Link>
-    )
-}
-
-Navigation.Button = ({children, ...restProps}: any) => {
-    return (
-        <button {...restProps}>
-            {children}
-        </button>
+        <Link href={href} {...restProps}>{children}</Link>
     )
 }
 
