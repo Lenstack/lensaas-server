@@ -1,6 +1,6 @@
 export const HomeHero = () => {
     return (
-        <main className={"container mx-auto p-24 flex flex-col gap-20"}>
+        <main className={"container mx-auto p-48 flex flex-col gap-20"}>
             <section className={"flex flex-col text-center"}>
                 <h1 className="text-8xl font-bold my-10 text-transparent bg-clip-text bg-gradient-to-l from-orange-400 via-cyan-300 to-pink-800">
                     The Fastest Way To Build Your SAAS With Microservices
