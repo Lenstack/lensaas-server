@@ -6,7 +6,7 @@ import Logo from "@/assets/vercel.svg"
 export const HomeHeader = () => {
     return (
         <header className={"container"}>
-            <Navigation className="flex justify-around align-middle pt-5 pb-5 fixed w-full bg-[#F0F1F3] bg-opacity-80">
+            <Navigation className="flex justify-around align-middle pt-10 pb-5 fixed w-full bg-[#F0F1F3] bg-opacity-80">
                 <Navigation.Container className={"flex items-center gap-5"}>
                     <Navigation.Item href="/">
                         <Image src={Logo} alt={"logo"} className={"h-[50px] w-[100px] object-fill"}/>
