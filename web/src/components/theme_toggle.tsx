@@ -5,8 +5,14 @@ export const ThemeToggle = () => {
     const [icon, setIcon] = useState("☀️")
 
     useEffect(() => {
-        localStorage.getItem("theme") === "dark" ? setTheme("dark") : setTheme("light")
         theme === "dark" ? setIcon("☀️") : setIcon("🌙")
+        if (localStorage.getItem("theme") === "dark") {
+            setTheme("dark")
+            document.documentElement.classList.add('dark')
+            return
+        }
+        setTheme("light")
+        document.documentElement.classList.remove('dark')
     }, [theme])
 
     const toggleTheme = () => {
