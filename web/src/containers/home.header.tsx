@@ -1,5 +1,5 @@
 import Image from "next/image";
-import {Navigation} from "@/components";
+import {Navigation, ThemeToggle} from "@/components";
 import {HOME_LINKS} from "@/constants";
 import Logo from "@/assets/vercel.svg"
 
@@ -24,6 +24,7 @@ export const HomeHeader = () => {
                     <Navigation.Item href="/"
                                      className={"py-2 px-4 rounded-full border-zinc-800 border hover:bg-transparent hover:bg-zinc-800 hover:border-zinc-800 hover:text-white"}>Sign
                         Up</Navigation.Item>
+                    <ThemeToggle/>
                 </Navigation.Container>
             </Navigation>
         </header>
