@@ -28,7 +28,10 @@ func NewRouter(srv *handler.Server, logger *zap.Logger) *Router {
 		WithUserAgent: true,
 	}))
 
+	proxyReverse := NewProxyReverse("http://localhost:5000/", logger)
+
 	app.Handle("/", playground.Handler("GraphQL playground", "/query"))
-	app.Handle("/query", srv)
+	app.Handle("/query", proxyReverse.ProxyReverseHandler(srv))
+
 	return &Router{app: app}
 }
