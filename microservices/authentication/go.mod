@@ -1,19 +1,19 @@
-module github.com/Lenstack/clean-grpc-microservices-gateway-ui/tree/master/microservices/authentication
+module github.com/Lenstack/Lensaas/microservices/authentication
 
 go 1.19
 
 require (
 	github.com/Masterminds/squirrel v1.5.3
-	github.com/go-redis/redis/v9 v9.0.0-rc.1
-	github.com/golang-jwt/jwt/v4 v4.4.2
+	github.com/go-redis/redis/v9 v9.0.0-rc.2
+	github.com/golang-jwt/jwt/v4 v4.4.3
 	github.com/google/uuid v1.3.0
 	github.com/grpc-ecosystem/go-grpc-middleware v1.3.0
 	github.com/lib/pq v1.10.7
 	github.com/spf13/viper v1.14.0
-	go.uber.org/zap v1.23.0
-	golang.org/x/crypto v0.0.0-20220525230936-793ad666bf5e
-	golang.org/x/net v0.0.0-20221014081412-f15817d10f9b
-	google.golang.org/grpc v1.50.1
+	go.uber.org/zap v1.24.0
+	golang.org/x/crypto v0.4.0
+	golang.org/x/net v0.4.0
+	google.golang.org/grpc v1.51.0
 	google.golang.org/protobuf v1.28.1
 )
 
@@ -36,8 +36,8 @@ require (
 	github.com/subosito/gotenv v1.4.1 // indirect
 	go.uber.org/atomic v1.9.0 // indirect
 	go.uber.org/multierr v1.8.0 // indirect
-	golang.org/x/sys v0.0.0-20220908164124-27713097b956 // indirect
-	golang.org/x/text v0.4.0 // indirect
+	golang.org/x/sys v0.3.0 // indirect
+	golang.org/x/text v0.5.0 // indirect
 	google.golang.org/genproto v0.0.0-20221024183307-1bc688fe9f3e // indirect
 	gopkg.in/ini.v1 v1.67.0 // indirect
 	gopkg.in/yaml.v2 v2.4.0 // indirect

@@ -1,7 +1,7 @@
 package applications
 
 import (
-	"github.com/Lenstack/clean-grpc-microservices-gateway-ui/tree/master/microservices/authentication/pkg/v1"
+	"github.com/Lenstack/Lensaas/microservices/authentication/pkg/v1"
 )
 
 func (ms *MicroserviceServer) RefreshToken(req *pkg.RefreshTokenRequest, stream pkg.Authentication_RefreshTokenServer) error {

@@ -1,10 +1,10 @@
 package main
 
 import (
-	"github.com/Lenstack/clean-grpc-microservices-gateway-ui/tree/master/microservices/authentication/core/applications"
-	"github.com/Lenstack/clean-grpc-microservices-gateway-ui/tree/master/microservices/authentication/core/services"
-	"github.com/Lenstack/clean-grpc-microservices-gateway-ui/tree/master/microservices/authentication/infrastructure"
-	"github.com/Lenstack/clean-grpc-microservices-gateway-ui/tree/master/microservices/authentication/util"
+	"github.com/Lenstack/Lensaas/microservices/authentication/core/applications"
+	"github.com/Lenstack/Lensaas/microservices/authentication/core/services"
+	"github.com/Lenstack/Lensaas/microservices/authentication/infrastructure"
+	"github.com/Lenstack/Lensaas/microservices/authentication/util"
 	"github.com/spf13/viper"
 )
 

@@ -2,7 +2,7 @@ package applications
 
 import (
 	"fmt"
-	"github.com/Lenstack/clean-grpc-microservices-gateway-ui/tree/master/microservices/authentication/pkg/v1"
+	"github.com/Lenstack/Lensaas/microservices/authentication/pkg/v1"
 	"golang.org/x/net/context"
 )
 

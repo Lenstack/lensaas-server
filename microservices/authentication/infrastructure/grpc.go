@@ -1,8 +1,8 @@
 package infrastructure
 
 import (
-	"github.com/Lenstack/clean-grpc-microservices-gateway-ui/tree/master/microservices/authentication/core/applications"
-	"github.com/Lenstack/clean-grpc-microservices-gateway-ui/tree/master/microservices/authentication/pkg/v1"
+	"github.com/Lenstack/Lensaas/microservices/authentication/core/applications"
+	"github.com/Lenstack/Lensaas/microservices/authentication/pkg/v1"
 	"github.com/grpc-ecosystem/go-grpc-middleware"
 	"github.com/grpc-ecosystem/go-grpc-middleware/logging/zap"
 	"github.com/grpc-ecosystem/go-grpc-middleware/recovery"

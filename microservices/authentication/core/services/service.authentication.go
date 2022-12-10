@@ -1,9 +1,9 @@
 package services
 
 import (
-	"github.com/Lenstack/clean-grpc-microservices-gateway-ui/tree/master/microservices/authentication/core/entities"
-	"github.com/Lenstack/clean-grpc-microservices-gateway-ui/tree/master/microservices/authentication/core/repositories"
-	"github.com/Lenstack/clean-grpc-microservices-gateway-ui/tree/master/microservices/authentication/util"
+	"github.com/Lenstack/Lensaas/microservices/authentication/core/entities"
+	"github.com/Lenstack/Lensaas/microservices/authentication/core/repositories"
+	"github.com/Lenstack/Lensaas/microservices/authentication/util"
 	"github.com/Masterminds/squirrel"
 	"github.com/go-redis/redis/v9"
 	"github.com/google/uuid"
