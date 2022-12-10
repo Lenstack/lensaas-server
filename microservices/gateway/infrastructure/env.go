@@ -1,14 +1,16 @@
 package infrastructure
 
-import (
-	"github.com/spf13/viper"
-)
+import "github.com/spf13/viper"
 
 func Load() {
-	viper.SetConfigFile(".env")
-	viper.AutomaticEnv()
+	viper.SetConfigName("default")
+	viper.SetConfigType("yaml")
+	viper.AddConfigPath("./config")
+
 	err := viper.ReadInConfig()
 	if err != nil {
-		return
+		panic(err)
 	}
+
+	viper.AutomaticEnv()
 }

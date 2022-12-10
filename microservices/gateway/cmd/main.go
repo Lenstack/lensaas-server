@@ -1,18 +1,20 @@
 package main
 
 import (
-	"github.com/Lenstack/Lensaas/tree/master/microservices/gateway/infrastructure"
+	"github.com/Lenstack/Lensaas/microservices/gateway/infrastructure"
 	"github.com/spf13/viper"
 )
 
 func main() {
 	infrastructure.Load()
+	loggerManager := infrastructure.NewLoggerManager("development")
 
-	var (
-		Environment = viper.Get("ENVIRONMENT").(string)
-		GatewayPort = viper.Get("GATEWAY_PORT").(string)
-	)
+	gatewayConfig := &infrastructure.GatewayConfig{}
+	err := viper.UnmarshalKey("gateway", gatewayConfig)
+	if err != nil {
+		panic(err)
+	}
 
-	loggerManager := infrastructure.NewLoggerManager(Environment)
-	infrastructure.NewGraphqlServer(GatewayPort, loggerManager.Logger)
+	router := infrastructure.NewRouter(gatewayConfig.Routes, loggerManager.Logger)
+	infrastructure.NewGraphqlServer(gatewayConfig.Listen.Port, router.App, loggerManager.Logger)
 }
