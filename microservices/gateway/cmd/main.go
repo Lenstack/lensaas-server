@@ -7,7 +7,12 @@ import (
 
 func main() {
 	infrastructure.Load()
-	loggerManager := infrastructure.NewLoggerManager("development")
+
+	var (
+		environment = viper.GetString("gateway.environment")
+	)
+
+	loggerManager := infrastructure.NewLoggerManager(environment)
 
 	gatewayConfig := &infrastructure.GatewayConfig{}
 	err := viper.UnmarshalKey("gateway", gatewayConfig)
