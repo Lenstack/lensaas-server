@@ -5,11 +5,12 @@ import Logo from "@/assets/vercel.svg"
 
 export const HomeHeader = () => {
     return (
-        <header className={"container"}>
-            <Navigation className="flex justify-around align-middle pt-10 pb-5 fixed w-full bg-[#F0F1F3] bg-opacity-80">
+        <header className={"container dark:text-white"}>
+            <Navigation
+                className={"flex justify-around align-middle pt-10 pb-5 fixed w-full bg-opacity-80 bg-[#F0F1F3] dark:bg-[#18181B]"}>
                 <Navigation.Container className={"flex items-center gap-5"}>
                     <Navigation.Item href="/">
-                        <Image src={Logo} alt={"logo"} className={"h-[50px] w-[100px] object-fill"}/>
+                        <Image src={Logo} alt={"logo"} className={"h-[50px] w-[100px]"}/>
                     </Navigation.Item>
                 </Navigation.Container>
                 <Navigation.Container className={"flex items-center gap-5"}>

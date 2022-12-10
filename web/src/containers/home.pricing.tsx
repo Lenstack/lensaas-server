@@ -9,7 +9,7 @@ export const HomePricing = () => {
                     Aperiam doloremque laudantium modi pariatur reprehenderit!</p>
             </section>
             <section className="grid grid-cols-3 gap-10">
-                <Card className="bg-white rounded-2xl p-10">
+                <Card>
                     <Card.Header>
                         <h2 className="text-2xl font-bold">Free</h2>
                     </Card.Header>
@@ -18,7 +18,7 @@ export const HomePricing = () => {
                             Aperiam</p>
                     </Card.Content>
                 </Card>
-                <Card className="bg-white rounded-2xl p-10">
+                <Card>
                     <Card.Header>
                         <h2 className="text-2xl font-bold">Free</h2>
                     </Card.Header>
@@ -27,7 +27,7 @@ export const HomePricing = () => {
                             Aperiam</p>
                     </Card.Content>
                 </Card>
-                <Card className="bg-white rounded-2xl p-10">
+                <Card>
                     <Card.Header>
                         <h2 className="text-2xl font-bold">Free</h2>
                     </Card.Header>
