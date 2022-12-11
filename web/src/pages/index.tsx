@@ -2,7 +2,7 @@ import {HomeContact, HomeFeature, HomeFooter, HomeHeader, HomeHero, HomePricing}
 
 export default function Home() {
     return (
-        <div className={"min-h-screen overflow-hidden"}>
+        <div className="min-h-screen overflow-hidden">
             <HomeHeader/>
             <HomeHero/>
             <HomeFeature/>
