@@ -3,6 +3,7 @@ package infrastructure
 import (
 	"github.com/Lenstack/Lensaas/microservices/authentication/core/applications"
 	"github.com/Lenstack/Lensaas/microservices/authentication/pkg/v1"
+	"github.com/Lenstack/Lensaas/microservices/authentication/util"
 	"go.uber.org/zap"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/reflection"
@@ -20,7 +21,7 @@ func NewGrpcServer(port string, microservices applications.MicroserviceServer, l
 		return nil
 	}
 
-	tlsCredentials, err := LoadTLSCredentials()
+	tlsCredentials, err := util.LoadTLSCredentials()
 	if err != nil {
 		loggerManager.Sugar().Fatalf("failed to load tls credentials: %v", err)
 		return nil

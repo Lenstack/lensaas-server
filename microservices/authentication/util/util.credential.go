@@ -1,4 +1,4 @@
-package infrastructure
+package util
 
 import (
 	"crypto/tls"
