@@ -1,32 +1,27 @@
 import {useEffect, useState} from "react";
+import {useTheme} from "next-themes";
 
 export const ThemeToggle = () => {
-    const [theme, setTheme] = useState("light")
-    const [icon, setIcon] = useState("☀️")
+    const [icon, setIcon] = useState("")
+    const {theme, systemTheme, resolvedTheme, setTheme} = useTheme()
 
     useEffect(() => {
-        theme === "dark" ? setIcon("☀️") : setIcon("🌙")
-        if (localStorage.getItem("theme") === "dark") {
-            setTheme("dark")
-            document.documentElement.classList.add('dark')
-            return
+        switch (theme) {
+            case "dark":
+                setIcon("☀️")
+                break
+            case "light":
+                setIcon("🌙")
+                break
+            default:
+                setIcon(systemTheme === "dark" ? "☀️" : "🌙")
+                break
         }
-        setTheme("light")
-        document.documentElement.classList.remove('dark')
-    }, [theme])
+    }, [systemTheme, theme])
 
     const toggleTheme = () => {
-        if (theme === "light") {
-            setTheme("dark")
-            setIcon("🌙")
-            localStorage.setItem("theme", "dark")
-            document.documentElement.classList.add('dark')
-        } else {
-            setTheme("light")
-            setIcon("☀️")
-            localStorage.setItem("theme", "light")
-            document.documentElement.classList.remove('dark')
-        }
+        resolvedTheme === "dark" ? setTheme("light") : setTheme("dark")
+        resolvedTheme === "dark" ? setIcon("☀️") : setIcon("🌙")
     }
 
     return (

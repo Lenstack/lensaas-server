@@ -1,3 +1,5 @@
+import {Button} from "@/components";
+
 export const HomeHero = () => {
     return (
         <main className={"container mx-auto p-64 flex flex-col gap-20 dark:text-white"}>
@@ -12,11 +14,8 @@ export const HomeHero = () => {
                 </p>
             </section>
             <section className={"flex align-middle justify-center gap-5"}>
-                <button
-                    className={"py-5 px-10 rounded-full bg-zinc-800 text-white dark:bg-zinc-800" }>Live
-                    Demo
-                </button>
-                <button>Documentation</button>
+                <Button>Get Started</Button>
+                <Button>Learn More</Button>
             </section>
         </main>
     )
