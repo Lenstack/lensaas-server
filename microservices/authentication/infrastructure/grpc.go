@@ -3,17 +3,11 @@ package infrastructure
 import (
 	"github.com/Lenstack/Lensaas/microservices/authentication/core/applications"
 	"github.com/Lenstack/Lensaas/microservices/authentication/pkg/v1"
-	"github.com/grpc-ecosystem/go-grpc-middleware"
-	"github.com/grpc-ecosystem/go-grpc-middleware/logging/zap"
-	"github.com/grpc-ecosystem/go-grpc-middleware/recovery"
 	"go.uber.org/zap"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/reflection"
 	"net"
 )
-
-type IGrpcServer interface {
-}
 
 type GrpcServer struct {
 	port string
@@ -26,16 +20,13 @@ func NewGrpcServer(port string, microservices applications.MicroserviceServer, l
 		return nil
 	}
 
-	grpcServer := grpc.NewServer(
-		grpc.UnaryInterceptor(grpc_middleware.ChainUnaryServer(
-			grpc_zap.UnaryServerInterceptor(loggerManager),
-			grpc_recovery.UnaryServerInterceptor(),
-		)),
-		grpc.StreamInterceptor(grpc_middleware.ChainStreamServer(
-			grpc_zap.StreamServerInterceptor(loggerManager),
-			grpc_recovery.StreamServerInterceptor(),
-		)),
-	)
+	tlsCredentials, err := LoadTLSCredentials()
+	if err != nil {
+		loggerManager.Sugar().Fatalf("failed to load tls credentials: %v", err)
+		return nil
+	}
+
+	grpcServer := grpc.NewServer(grpc.Creds(tlsCredentials))
 	pkg.RegisterAuthenticationServer(grpcServer, &microservices)
 	reflection.Register(grpcServer)
 
