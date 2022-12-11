@@ -2,6 +2,7 @@ package infrastructure
 
 import (
 	"github.com/go-chi/chi/v5"
+	"github.com/go-chi/cors"
 	"go.uber.org/zap"
 )
 
@@ -11,7 +12,14 @@ type Router struct {
 
 func NewRouter(routes []Route, logger *zap.Logger) *Router {
 	app := chi.NewRouter()
-	app.Use()
+	app.Use(cors.Handler(
+		cors.Options{
+			AllowCredentials: true,
+			AllowedOrigins:   []string{"*"},
+			AllowedMethods:   []string{"GET", "POST", "PUT", "DELETE", "OPTIONS"},
+			AllowedHeaders:   []string{"Accept", "Authorization", "Content-Type", "X-CSRF-Token"},
+		},
+	))
 
 	for _, route := range routes {
 		proxy, err := NewProxy(route.Target, route.Protocol, logger)
