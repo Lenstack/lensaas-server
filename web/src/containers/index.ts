@@ -7,3 +7,4 @@ export {HomeFooter} from "./home.footer"
 
 export {DashboardHeader} from "./dashboard.header"
 export {DashboardAside} from "./dashboard.aside"
+export {DashboardContent} from "./dashboard.content"
