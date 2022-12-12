@@ -13,7 +13,7 @@ export default function App({Component, pageProps}: AppProps) {
                 <meta name="author" content="Lenstack"/>
                 <meta name="keywords" content="keywords"/>
                 <meta name="theme-color" content="#EEF0F2"/>
-                <link rel="manifest" href="/manifest.json" />
+                <link rel="icon" href="/favicon.ico"/>
                 <title>Lensaas</title>
             </Head>
             <Component {...pageProps} />
