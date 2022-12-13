@@ -3,24 +3,24 @@ export const DASHBOARD_LINKS = [
         id: 1,
         title: 'Dashboard',
         url: '/dashboard',
-        icon: 'logo',
+        icon: 'icon',
     },
     {
         id: 2,
         title: 'Billing',
         url: '/',
-        icon: 'bill'
+        icon: 'icon'
     },
     {
         id: 3,
         title: 'Settings',
         url: '/',
-        icon: 'settings'
+        icon: 'icon'
     },
     {
         id: 4,
         title: 'Support',
         url: '/',
-        icon: 'help'
+        icon: 'icon'
     }
 ]

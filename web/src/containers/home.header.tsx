@@ -7,7 +7,7 @@ export const HomeHeader = () => {
     return (
         <header className={"container dark:text-white"}>
             <Navigation
-                className={"flex justify-around align-middle pt-10 pb-5 fixed w-full bg-opacity-90 bg-[#F0F1F3] dark:bg-[#18181B] dark:bg-opacity-90"}>
+                className={"flex justify-around align-middle pt-10 pb-5 fixed w-full bg-opacity-90 bg-[#F2F3F5] dark:bg-[#18181B] dark:bg-opacity-90"}>
                 <Navigation.Container className={"flex items-center gap-5"}>
                     <Navigation.Item href="/">
                         <Image src={Logo} alt={"logo"} className={"h-[50px] w-[100px]"}/>
