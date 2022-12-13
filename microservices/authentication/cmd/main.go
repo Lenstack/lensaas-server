@@ -37,9 +37,8 @@ func main() {
 	jwtManager := util.NewJwtManager(JwtSecret)
 
 	authenticationService := services.NewAuthenticationService(postgres.Database, redis.Client, *jwtManager)
-	middlewareApplication := applications.NewMiddlewareApplication(loggerManager.Logger)
 
-	microservices := applications.NewMicroserviceServer(*middlewareApplication, *authenticationService)
+	microservices := applications.NewMicroserviceServer(*authenticationService)
 
 	infrastructure.NewGrpcServer(GrpcPort, *microservices, loggerManager.Logger)
 }

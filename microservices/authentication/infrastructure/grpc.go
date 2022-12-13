@@ -1,11 +1,13 @@
 package infrastructure
 
+// openssl req -nodes -x509 -newkey rsa:4096 -keyout server-key.pem -out server-cert.pem -sha256 -days 365 -subj '/CN=localhost'
 import (
+	"crypto/tls"
 	"github.com/Lenstack/Lensaas/microservices/authentication/core/applications"
 	"github.com/Lenstack/Lensaas/microservices/authentication/pkg/v1"
-	"github.com/Lenstack/Lensaas/microservices/authentication/util"
 	"go.uber.org/zap"
 	"google.golang.org/grpc"
+	"google.golang.org/grpc/credentials"
 	"google.golang.org/grpc/reflection"
 	"net"
 )
@@ -21,13 +23,17 @@ func NewGrpcServer(port string, microservices applications.MicroserviceServer, l
 		return nil
 	}
 
-	tlsCredentials, err := util.LoadTLSCredentials()
+	cert, err := tls.LoadX509KeyPair("./cert/server-cert.pem", "./cert/server-key.pem")
 	if err != nil {
-		loggerManager.Sugar().Fatalf("failed to load tls credentials: %v", err)
+		loggerManager.Sugar().Fatalf("failed to load key pair: %v", err)
 		return nil
 	}
 
-	grpcServer := grpc.NewServer(grpc.Creds(tlsCredentials))
+	opts := []grpc.ServerOption{
+		grpc.Creds(credentials.NewServerTLSFromCert(&cert)),
+	}
+
+	grpcServer := grpc.NewServer(opts...)
 	pkg.RegisterAuthenticationServer(grpcServer, &microservices)
 	reflection.Register(grpcServer)
 
