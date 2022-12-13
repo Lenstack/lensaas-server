@@ -1,4 +1,5 @@
 export {Navigation} from "./navigation"
 export {Card} from "./card"
 export {Button} from "./button"
+export {Avatar} from "./avatar"
 export {ThemeToggle} from "./theme_toggle"
