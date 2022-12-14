@@ -1,4 +1,4 @@
-import {HomeContact, HomeFeature, HomeFooter, HomeHeader, HomeHero, HomePricing} from "@/containers";
+import {HomeContact, HomeFeature, HomeFooter, HomeFq, HomeHeader, HomeHero, HomePricing} from "@/containers";
 
 export default function Home() {
     return (
@@ -7,6 +7,7 @@ export default function Home() {
             <HomeHero/>
             <HomeFeature/>
             <HomePricing/>
+            <HomeFq/>
             <HomeContact/>
             <HomeFooter/>
         </div>

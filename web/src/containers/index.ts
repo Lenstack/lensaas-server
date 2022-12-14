@@ -2,6 +2,7 @@ export {HomeHeader} from "./home.header"
 export {HomeHero} from "./home.hero"
 export {HomeFeature} from "./home.feature"
 export {HomePricing} from "./home.pricing"
+export {HomeFq} from "./home.fq"
 export {HomeContact} from "./home.contact"
 export {HomeFooter} from "./home.footer"
 
