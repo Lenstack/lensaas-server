@@ -1,4 +1,5 @@
-import {Card} from "@/components";
+import {Pricing} from "@/components";
+import {PLAN_CONTENT} from "@/constants";
 
 export const HomePricing = () => {
     return (
@@ -8,44 +9,14 @@ export const HomePricing = () => {
                 <p className={"text-2xl"}>Lorem ipsum dolor sit amet, consectetur adipisicing elit.
                     Aperiam doloremque laudantium modi pariatur reprehenderit!</p>
             </section>
-            <section className="grid grid-cols-4 gap-10">
-                <Card>
-                    <Card.Header>
-                        <h3 className="text-2xl font-bold">Small</h3>
-                    </Card.Header>
-                    <Card.Content>
-                        <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit.
-                            Aperiam</p>
-                    </Card.Content>
-                </Card>
-                <Card>
-                    <Card.Header>
-                        <h3 className="text-2xl font-bold">Seed</h3>
-                    </Card.Header>
-                    <Card.Content>
-                        <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit.
-                            Aperiam</p>
-                    </Card.Content>
-                </Card>
-                <Card>
-                    <Card.Header>
-                        <h3 className="text-2xl font-bold">Scale</h3>
-                    </Card.Header>
-                    <Card.Content>
-                        <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit.
-                            Aperiam</p>
-                    </Card.Content>
-                </Card>
-                <Card>
-                    <Card.Header>
-                        <h3 className="text-2xl font-bold">Smart</h3>
-                    </Card.Header>
-                    <Card.Content>
-                        <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit.
-                            Aperiam</p>
-                    </Card.Content>
-                </Card>
-            </section>
+            <Pricing className="grid grid-cols-4 gap-10">
+                {
+                    PLAN_CONTENT.map(({id, title, description, price, features}) => (
+                        <Pricing.Item key={id} title={title} description={description} price={price}
+                                      features={features}/>
+                    ))
+                }
+            </Pricing>
         </section>
     )
 }
