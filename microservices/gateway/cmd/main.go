@@ -8,18 +8,16 @@ import (
 func main() {
 	infrastructure.Load()
 
-	var (
-		environment = viper.GetString("gateway.environment")
-	)
-
-	loggerManager := infrastructure.NewLoggerManager(environment)
-
-	gatewayConfig := &infrastructure.GatewayConfig{}
+	gatewayConfig := &infrastructure.Gateway{}
 	err := viper.UnmarshalKey("gateway", gatewayConfig)
 	if err != nil {
 		panic(err)
 	}
 
-	router := infrastructure.NewRouter(gatewayConfig.Routes, loggerManager.Logger)
-	infrastructure.NewGraphqlServer(gatewayConfig.Listen.Port, router.App, loggerManager.Logger)
+	loggerManager := infrastructure.NewLoggerManager(gatewayConfig.Environment)
+	graphqlServer := infrastructure.NewGraphqlServer(gatewayConfig.Services)
+	graphqlServer.CallGrpcMicroservices()
+
+	app := infrastructure.NewRouter(graphqlServer.GraphqlServer)
+	infrastructure.NewHttpTLS(*gatewayConfig, app.Router, loggerManager.Logger)
 }

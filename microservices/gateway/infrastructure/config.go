@@ -1,18 +1,17 @@
 package infrastructure
 
-type Route struct {
-	Name     string
-	Context  string
-	Target   string
-	Protocol string
+type Service struct {
+	Name string
+	Host string
 }
 
-type ListenAddress struct {
+type Listen struct {
 	Host string
 	Port string
 }
 
-type GatewayConfig struct {
-	Listen ListenAddress
-	Routes []Route
+type Gateway struct {
+	Environment string
+	Listen
+	Services []Service
 }

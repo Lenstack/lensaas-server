@@ -3,16 +3,10 @@ gateway:
   listen:
     host: localhost
     port: 8080
-  routes:
-    - name: authentication-service
-      context: /user
-      target: https://localhost:5000
-      protocol: grpc
-    - name: session-service
-      context: /session
-      target: https://localhost:5001
-      protocol: grpc
-    - name: billing-service
-      context: /billing
-      target: https://localhost:5000
-      protocol: grpc
+  services:
+    - name: authentication
+      host: http://localhost:5000
+    - name: session
+      host: http://localhost:5001
+    - name: setting
+      host: http://localhost:5002

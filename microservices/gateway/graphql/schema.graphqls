@@ -1,0 +1,17 @@
+type SignIn{
+    email: String!
+    password: String!
+}
+
+input SignInRequest{
+    email: String!
+    password: String!
+}
+
+type Mutation{
+    signIn(signin: SignInRequest!): SignIn!
+}
+
+type Query{
+    signIn(signin: SignInRequest!): SignIn!
+}
