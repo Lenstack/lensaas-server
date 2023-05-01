@@ -1,0 +1,21 @@
+version: '3.8'
+services:
+  surrealdb:
+    image: surrealdb/surrealdb:latest
+    container_name: surrealdb
+    command: start --log trace --user startup --pass eHmBXR+0O38Q6HixRmTh+u7t2MT+yXHrE3M52UAh6vU= file:data/surrealdb.db
+    restart: always
+    ports:
+      - 8000:8000
+    volumes:
+      - surrealdb-data:/data
+    networks:
+      - surrealdb-network
+volumes:
+  surrealdb-data:
+networks:
+  surrealdb-network:
+    driver: bridge
+
+
+

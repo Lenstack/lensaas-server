@@ -1,44 +1,38 @@
 package main
 
 import (
-	"github.com/Lenstack/Lensaas/microservices/authentication/core/applications"
-	"github.com/Lenstack/Lensaas/microservices/authentication/core/services"
-	"github.com/Lenstack/Lensaas/microservices/authentication/infrastructure"
-	"github.com/Lenstack/Lensaas/microservices/authentication/util"
+	"github.com/Lenstack/lensaas-server/microservices/authentication/internal/core/applications"
+	"github.com/Lenstack/lensaas-server/microservices/authentication/internal/core/services"
+	"github.com/Lenstack/lensaas-server/microservices/authentication/internal/infrastructure"
+	"github.com/Lenstack/lensaas-server/microservices/authentication/internal/utils"
 	"github.com/spf13/viper"
 )
 
 func main() {
-	infrastructure.Load()
-
+	// Load environment variables
+	infrastructure.NewLoadEnv()
 	var (
-		Environment              = viper.Get("ENVIRONMENT").(string)
-		GrpcPort                 = viper.Get("GRPC_PORT").(string)
-		PostgresHost             = viper.Get("POSTGRES_HOST").(string)
-		PostgresPort             = viper.Get("POSTGRES_PORT").(string)
-		PostgresDatabaseName     = viper.Get("POSTGRES_DB").(string)
-		PostgresDatabaseUser     = viper.Get("POSTGRES_USER").(string)
-		PostgresDatabasePassword = viper.Get("POSTGRES_PASSWORD").(string)
-		RedisHost                = viper.Get("REDIS_HOST").(string)
-		RedisPort                = viper.Get("REDIS_PORT").(string)
-		RedisPassword            = viper.Get("REDIS_PASSWORD").(string)
-		JwtSecret                = viper.Get("JWT_SECRET").(string)
+		AppEnvironment         = viper.GetString("APP_ENVIRONMENT")
+		AppPort                = viper.GetString("APP_PORT")
+		JwtSecret              = viper.GetString("JWT_SECRET")
+		JwtAccessExpirationIn  = viper.GetString("JWT_ACCESS_EXPIRATION_IN")
+		JwtRefreshExpirationIn = viper.GetString("JWT_REFRESH_EXPIRATION_IN")
 	)
 
-	loggerManager := infrastructure.NewLoggerManager(Environment)
-	postgres := infrastructure.NewPostgres(
-		PostgresHost, PostgresPort, PostgresDatabaseName,
-		PostgresDatabaseUser, PostgresDatabasePassword,
-		loggerManager.Logger,
-	)
+	// Initialize logger, database, jwt and other infrastructure
+	logger := infrastructure.NewLogger(AppEnvironment)
+	surrealDB := infrastructure.NewSurrealDB(logger)
+	jwt := utils.NewJwt(JwtSecret, JwtAccessExpirationIn, JwtRefreshExpirationIn)
+	bcrypt := utils.NewBcrypt()
+	email := utils.NewEmail(logger)
 
-	redis := infrastructure.NewRedisManager(RedisHost, RedisPort, RedisPassword, loggerManager.Logger)
+	// Initialize services (user, oauth provider, etc.)
+	userService := services.NewUserService(surrealDB.Database, *jwt, *bcrypt, *email)
 
-	jwtManager := util.NewJwtManager(JwtSecret)
+	// Initialize microservices
+	microservices := applications.NewMicroservice(logger, *jwt, *userService)
 
-	authenticationService := services.NewAuthenticationService(postgres.Database, redis.Client, *jwtManager)
-
-	microservices := applications.NewMicroserviceServer(*authenticationService)
-
-	infrastructure.NewGrpcServer(GrpcPort, *microservices, loggerManager.Logger)
+	// Initialize router and start HTTP server
+	router := infrastructure.NewRouter(*microservices)
+	infrastructure.NewHttpServer(AppPort, router.Handlers, logger)
 }
