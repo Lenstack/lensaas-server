@@ -42,6 +42,6 @@ func TestOauthGetUserInformation(t *testing.T) {
 	if userInformation.Id != "123" || userInformation.Name != "test" || userInformation.Email != "test@hotmail.com" || userInformation.Avatar != "avatar.png" {
 		t.Error("Expected user information to be correct")
 	}
-
+	t.Log(userInformation)
 	t.Log("TestOauthGetUserInformation passed")
 }
