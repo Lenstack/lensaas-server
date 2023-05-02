@@ -27,6 +27,9 @@ func NewRouter(microservice applications.Microservice) *Router {
 	authentication.HandleFunc("/refresh_token", microservice.RefreshToken).Methods(http.MethodPost)
 	authentication.HandleFunc("/forgot_password", microservice.ForgotPassword).Methods(http.MethodPost)
 	authentication.HandleFunc("/reset_password", microservice.ResetPassword).Methods(http.MethodPost)
+	authentication.HandleFunc("/verify_email", microservice.VerifyEmail).Methods(http.MethodGet)
+	authentication.HandleFunc("/resend_email_verification", microservice.ResendEmailVerification).Methods(http.MethodPost)
+	authentication.HandleFunc("/mfa", microservice.Mfa).Methods(http.MethodPost)
 	authentication.HandleFunc("/me", microservice.Me).Methods(http.MethodGet)
 	return &Router{Handlers: router}
 }
