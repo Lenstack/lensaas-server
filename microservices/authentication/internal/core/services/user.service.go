@@ -58,7 +58,7 @@ func (s *UserService) SignInWithCredentials(email string, password string) (acce
 	// Compare password with hash
 	err = s.Bcrypt.ComparePassword(userByEmail.Password, password)
 	if err != nil {
-		return "", "", errors.New("invalid password")
+		return "", "", errors.New("invalid email or password")
 	}
 
 	// Generate access token and refresh token
@@ -71,7 +71,12 @@ func (s *UserService) SignInWithCredentials(email string, password string) (acce
 		return "", "", err
 	}
 
-	// Update user last login date
+	// Update user last sign in date and ip address and user agent and device type
+	err = s.UserRepository.UpdateLastSignIn(userByEmail.ID)
+	if err != nil {
+		return "", "", errors.New("cannot update user last sign in")
+	}
+
 	return accessToken, refreshToken, nil
 }
 
@@ -139,21 +144,21 @@ func (s *UserService) SignInWithOAuthCallback(provider string, code string) (acc
 	}
 
 	// Search user in database by email
-	user, err := s.UserRepository.FindByEmail(information.Email)
+	userByEmail, err := s.UserRepository.FindByEmail(information.Email)
 	if err != nil {
 		return "", "", err
 	}
 
-	fmt.Println(user)
+	fmt.Println(userByEmail)
 
 	// If user doesn't exist then create user in database
 
 	// Generate access token and refresh token with user id
-	accessToken, err = s.Jwt.GenerateToken(user.ID, s.Jwt.ExpirationTimeAccess)
+	accessToken, err = s.Jwt.GenerateToken(userByEmail.ID, s.Jwt.ExpirationTimeAccess)
 	if err != nil {
 		return "", "", err
 	}
-	refreshToken, err = s.Jwt.GenerateToken(user.ID, s.Jwt.ExpirationTimeRefresh)
+	refreshToken, err = s.Jwt.GenerateToken(userByEmail.ID, s.Jwt.ExpirationTimeRefresh)
 	if err != nil {
 		return "", "", err
 	}
@@ -161,6 +166,10 @@ func (s *UserService) SignInWithOAuthCallback(provider string, code string) (acc
 	// Create session in database with user id and access token and refresh token
 
 	// Update user last login date and ip address and user agent and device type
+	err = s.UserRepository.UpdateLastSignIn(userByEmail.ID)
+	if err != nil {
+		return "", "", errors.New("cannot update user last sign in")
+	}
 
 	return accessToken, refreshToken, nil
 }

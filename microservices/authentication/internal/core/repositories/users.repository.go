@@ -10,6 +10,7 @@ type IUserRepository interface {
 	FindByEmail(email string) (user entities.User, err error)
 	FindRefreshToken(refreshToken string) (user entities.User, err error)
 	Create(user entities.User) (userData entities.User, err error)
+	UpdateLastSignIn(userId string) (err error)
 }
 
 type UserRepository struct {
@@ -25,5 +26,9 @@ func (r *UserRepository) FindByEmail(email string) (user entities.User, err erro
 }
 
 func (r *UserRepository) Create(user entities.User) (err error) {
+	return nil
+}
+
+func (r *UserRepository) UpdateLastSignIn(userId string) (err error) {
 	return nil
 }
