@@ -16,6 +16,3 @@ volumes:
 networks:
   surrealdb-network:
     driver: bridge
-
-
-
