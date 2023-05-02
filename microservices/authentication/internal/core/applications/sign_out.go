@@ -37,7 +37,7 @@ func (m *Microservice) SignOut(wr http.ResponseWriter, req *http.Request) {
 	err = m.UserService.SignOut(userId)
 	if err != nil {
 		wr.WriteHeader(http.StatusBadRequest)
-		err = json.NewEncoder(wr).Encode(&models.ErrorResponse{Code: http.StatusBadRequest, Message: "Error signing out"})
+		err = json.NewEncoder(wr).Encode(&models.ErrorResponse{Code: http.StatusBadRequest, Message: err.Error()})
 		if err != nil {
 			m.Log.Error("Error encoding sign in response", zap.Error(err))
 		}

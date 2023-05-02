@@ -33,7 +33,7 @@ func (m *Microservice) RefreshToken(wr http.ResponseWriter, req *http.Request) {
 	accessToken, err := m.UserService.RefreshToken(userId)
 	if err != nil {
 		wr.WriteHeader(http.StatusBadRequest)
-		err = json.NewEncoder(wr).Encode(&models.ErrorResponse{Code: http.StatusBadRequest, Message: "Error refreshing token"})
+		err = json.NewEncoder(wr).Encode(&models.ErrorResponse{Code: http.StatusBadRequest, Message: err.Error()})
 		if err != nil {
 			m.Log.Error("Error encoding sign in response", zap.Error(err))
 		}

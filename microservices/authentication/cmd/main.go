@@ -24,7 +24,7 @@ func main() {
 	surrealDB := infrastructure.NewSurrealDB(logger)
 	jwt := utils.NewJwt(JwtSecret, JwtAccessExpirationIn, JwtRefreshExpirationIn)
 	bcrypt := utils.NewBcrypt()
-	email := utils.NewEmail(logger)
+	email := utils.NewEmail()
 
 	// Initialize services (user, oauth provider, etc.)
 	userService := services.NewUserService(surrealDB.Database, *jwt, *bcrypt, *email)

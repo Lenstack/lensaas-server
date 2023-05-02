@@ -1,7 +1,9 @@
 package services
 
 import (
+	"encoding/json"
 	"errors"
+	"fmt"
 	"github.com/Lenstack/lensaas-server/microservices/authentication/internal/core/entities"
 	"github.com/Lenstack/lensaas-server/microservices/authentication/internal/core/repositories"
 	"github.com/Lenstack/lensaas-server/microservices/authentication/internal/utils"
@@ -74,30 +76,93 @@ func (s *UserService) SignInWithCredentials(email string, password string) (acce
 }
 
 func (s *UserService) SignInWithOAuth(provider string, state string) (url string, err error) {
+	// Get oauth providers from config
+	oauthProviders := utils.NewOauth()
 	// Search provider in database and get client id and client secret
+	oauthProvider, err := oauthProviders.GetProvider(provider)
+	if err != nil {
+		return "", err
+	}
 	// Set oauth client config
-	s.OauthClientConfig = oauth2.Config{}
+	s.OauthClientConfig = oauth2.Config{
+		ClientID:     oauthProvider.Config.ClientId,
+		ClientSecret: oauthProvider.Config.ClientSecret,
+		RedirectURL:  oauthProvider.Config.RedirectUrl,
+		Scopes:       oauthProvider.Config.Scopes,
+		Endpoint: oauth2.Endpoint{
+			AuthURL:   oauthProvider.Config.AuthUrl,
+			TokenURL:  oauthProvider.Config.TokenUrl,
+			AuthStyle: oauth2.AuthStyleInParams,
+		},
+	}
 	// Generate auth code url with state
 	url = s.OauthClientConfig.AuthCodeURL(state, oauth2.AccessTypeOffline)
 	return url, nil
 }
 
 func (s *UserService) SignInWithOAuthCallback(provider string, code string) (accessToken string, refreshToken string, err error) {
-	// Search provider in database and get client id and client secret
+	// Get oauth providers from config
+	oauthProviders := utils.NewOauth()
 
-	// Set oauth client config
+	// Search provider in database and get client id and client secret
+	oauthProvider, err := oauthProviders.GetProvider(provider)
+	if err != nil {
+		return "", "", err
+	}
 
 	// Exchange auth code for token
+	token, err := s.OauthClientConfig.Exchange(oauth2.NoContext, code)
+	if err != nil {
+		return "", "", errors.New("cannot exchange auth code for token")
+	}
 
-	// Get user info from provider
+	// Get user information from oauth provider
+	response, err := s.OauthClientConfig.Client(oauth2.NoContext, token).Get(oauthProvider.Config.UserInfoUrl) // get url from oauth provider
+	if err != nil {
+		return "", "", errors.New("cannot get user info from oauth provider")
+	}
+
+	// Close response body
+	defer response.Body.Close()
+
+	// Decode user information
+	var userInformation map[string]interface{}
+	err = json.NewDecoder(response.Body).Decode(&userInformation)
+	if err != nil {
+		return "", "", errors.New("cannot decode user information")
+	}
+
+	// Get user information from oauth provider
+	information, err := oauthProviders.GetUserInformation(provider, userInformation)
+	if err != nil {
+		return "", "", err
+	}
 
 	// Search user in database by email
+	user, err := s.UserRepository.FindByEmail(information.Email)
+	if err != nil {
+		return "", "", err
+	}
 
-	// If user doesn't exist then create user
+	fmt.Println(user)
 
-	// Generate access token and refresh token
+	// If user doesn't exist then create user in database
 
-	return "", "", nil
+	// Generate access token and refresh token with user id
+	accessToken, err = s.Jwt.GenerateToken(user.ID, s.Jwt.ExpirationTimeAccess)
+	if err != nil {
+		return "", "", err
+	}
+	refreshToken, err = s.Jwt.GenerateToken(user.ID, s.Jwt.ExpirationTimeRefresh)
+	if err != nil {
+		return "", "", err
+	}
+
+	// Create session in database with user id and access token and refresh token
+
+	// Update user last login date and ip address and user agent and device type
+
+	return accessToken, refreshToken, nil
 }
 
 func (s *UserService) SignUp(name string, email string, password string) (err error) {
@@ -201,14 +266,17 @@ func (s *UserService) ResetPassword(userId string, password string) (err error) 
 }
 
 func (s *UserService) Me(userId string) (user entities.User, err error) {
-	// Search user in database by userId
 	return s.UserRepository.FindById(userId)
 }
 
 func (s *UserService) VerifyEmail(userId string) (err error) {
 	// Search user in database by userId
-
+	user, err := s.UserRepository.FindById(userId)
+	if err != nil {
+		return errors.New("user not found")
+	}
 	// Update user verified in database
+	fmt.Println(user)
 
 	// Send email with email verification confirmation
 	err = s.Email.Add(utils.Email{

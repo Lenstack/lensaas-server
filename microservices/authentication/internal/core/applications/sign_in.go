@@ -25,7 +25,7 @@ func (m *Microservice) SignIn(wr http.ResponseWriter, req *http.Request) {
 		if err != nil {
 			m.Log.Error("Error signing in with OAuth2", zap.Error(err))
 			wr.WriteHeader(http.StatusInternalServerError)
-			err = json.NewEncoder(wr).Encode(&models.SignInResponse{Code: http.StatusInternalServerError, Message: "Error signing in with OAuth2"})
+			err = json.NewEncoder(wr).Encode(&models.SignInResponse{Code: http.StatusInternalServerError, Message: err.Error()})
 			if err != nil {
 				m.Log.Error("Error encoding sign in response", zap.Error(err))
 			}
@@ -69,7 +69,7 @@ func (m *Microservice) SignIn(wr http.ResponseWriter, req *http.Request) {
 	accessToken, refreshToken, err := m.UserService.SignInWithCredentials(body.Email, body.Password)
 	if err != nil {
 		wr.WriteHeader(http.StatusInternalServerError)
-		err = json.NewEncoder(wr).Encode(&models.ErrorResponse{Code: http.StatusInternalServerError, Message: "Error signing in with credentials"})
+		err = json.NewEncoder(wr).Encode(&models.ErrorResponse{Code: http.StatusInternalServerError, Message: err.Error()})
 		if err != nil {
 			m.Log.Error("Error encoding sign in response", zap.Error(err))
 		}

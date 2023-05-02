@@ -3,7 +3,6 @@ package utils
 import (
 	"fmt"
 	"github.com/spf13/viper"
-	"go.uber.org/zap"
 	"gopkg.in/gomail.v2"
 	"time"
 )
@@ -23,13 +22,12 @@ type Email struct {
 	Body        string   // HTML body template
 	Queue       []Email  // Queue of emails to be sent
 	Attachments []string // File attachments
-	log         *zap.Logger
 }
 
-func NewEmail(log *zap.Logger) *Email {
+func NewEmail() *Email {
 	// Initialize email queue to be sent later
-	log.Info("Initializing email queue...")
-	return &Email{Queue: make([]Email, 0), log: log, From: viper.GetString("EMAIL_USER")}
+	fmt.Println("Initializing email queue...")
+	return &Email{Queue: make([]Email, 0), From: viper.GetString("EMAIL_USER")}
 }
 
 func (e *Email) Add(email Email) (err error) {
@@ -38,7 +36,7 @@ func (e *Email) Add(email Email) (err error) {
 		e.Worker()
 	}
 	// Add email to queue to be sent later
-	e.log.Info("Adding email to queue...")
+	fmt.Println("Adding email to queue...")
 	e.Queue = append(e.Queue, email)
 	return
 }
@@ -46,7 +44,7 @@ func (e *Email) Add(email Email) (err error) {
 func (e *Email) Send() (err error) {
 	// Send all emails in queue
 	for _, email := range e.Queue {
-		e.log.Info("Sending email...")
+		fmt.Println("Sending email...")
 		m := gomail.NewMessage()
 		m.SetHeader("From", email.From)
 		m.SetHeader("To", email.To...)
@@ -64,7 +62,7 @@ func (e *Email) Send() (err error) {
 		dialer := gomail.NewDialer(viper.GetString("EMAIL_HOST"), viper.GetInt("EMAIL_PORT"),
 			viper.GetString("EMAIL_USER"), viper.GetString("EMAIL_PASSWORD"))
 		if err := dialer.DialAndSend(m); err != nil {
-			e.log.Error("Error sending email: ", zap.Error(err))
+			fmt.Println("Error sending email: ", err)
 			return err
 		}
 
@@ -73,32 +71,32 @@ func (e *Email) Send() (err error) {
 			e.Queue = e.Queue[1:]
 		}
 	}
-	e.log.Info("Email has been sent!")
+	fmt.Println("Email has been sent!")
 	return
 }
 
 func (e *Email) Worker() {
-	e.log.Info("Starting email worker...")
+	fmt.Println("Starting email worker...")
 	// Start worker to send email
 	go func() {
 		for {
 			// Wait for 30 seconds
-			e.log.Info("Waiting for 30 seconds...")
+			fmt.Println("Waiting for 30 seconds...")
 			time.Sleep(30 * time.Second)
 
 			if len(e.Queue) == 0 {
-				e.log.Info("Email worker has been finished. Worker will stop.")
+				fmt.Println("Email queue is empty. Worker will stop.")
 				e.Stop() // Stop worker
 				return
 			}
 
 			if len(e.Queue) > 0 {
-				e.log.Info("Email worker is sending email...")
+				fmt.Println("Email queue is not empty. Worker will continue.")
 				// Send email in queue
 				if err := e.Send(); err != nil {
 					fmt.Println("Error sending email: ", err)
 				}
-				e.log.Info("Email worker has been finished. Worker will stop.")
+				fmt.Println("Email queue is empty. Worker will stop.")
 				e.Stop() // Stop worker
 				return
 			}
@@ -109,6 +107,6 @@ func (e *Email) Worker() {
 func (e *Email) Stop() {
 	// Stop sending email
 	e.Queue = make([]Email, 0)
-	e.log.Info("Email worker has been stopped.")
+	fmt.Println("Email worker has been stopped!")
 	return
 }

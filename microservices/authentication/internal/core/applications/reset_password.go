@@ -49,7 +49,7 @@ func (m *Microservice) ResetPassword(wr http.ResponseWriter, req *http.Request) 
 	if err != nil {
 		m.Log.Error("Error resetting password", zap.Error(err))
 		wr.WriteHeader(http.StatusBadRequest)
-		err = json.NewEncoder(wr).Encode(&models.ErrorResponse{Code: http.StatusBadRequest, Message: "Error resetting password"})
+		err = json.NewEncoder(wr).Encode(&models.ErrorResponse{Code: http.StatusBadRequest, Message: err.Error()})
 		if err != nil {
 			m.Log.Error("Error encoding reset password response", zap.Error(err))
 		}

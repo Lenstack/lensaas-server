@@ -37,7 +37,7 @@ func (m *Microservice) ForgotPassword(wr http.ResponseWriter, req *http.Request)
 	if err != nil {
 		m.Log.Error("Error forgotting password", zap.Error(err))
 		wr.WriteHeader(http.StatusBadRequest)
-		err = json.NewEncoder(wr).Encode(&models.ErrorResponse{Code: http.StatusBadRequest, Message: "Error forgotting password"})
+		err = json.NewEncoder(wr).Encode(&models.ErrorResponse{Code: http.StatusBadRequest, Message: err.Error()})
 		if err != nil {
 			m.Log.Error("Error encoding forgot password response", zap.Error(err))
 		}
