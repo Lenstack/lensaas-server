@@ -196,9 +196,21 @@ func (s *UserService) SignUp(name string, email string, password string) (err er
 	}
 
 	// Create user in database
-	err = s.UserRepository.Create(user)
+	userCreated, err := s.UserRepository.Create(user)
 	if err != nil {
 		return errors.New("cannot create user")
+	}
+
+	// Generate email verification token with user id
+	emailVerificationToken, err := s.Jwt.GenerateToken(userCreated.ID, s.Jwt.ExpirationTimeEmailVerification)
+	if err != nil {
+		return err
+	}
+
+	// Create email verification token in database
+	err = s.UserRepository.CreateEmailVerificationToken(userCreated.ID, emailVerificationToken)
+	if err != nil {
+		return err
 	}
 
 	// Create email verification and add to queue
@@ -206,7 +218,7 @@ func (s *UserService) SignUp(name string, email string, password string) (err er
 		From:    s.Email.From,
 		To:      []string{email},
 		Subject: "Verify email",
-		Body:    "<h1>Verify email</h1>",
+		Body:    "<h1>Verify email</h1>" + emailVerificationToken,
 	})
 	if err != nil {
 		return err
@@ -225,11 +237,15 @@ func (s *UserService) SignOut(userId string, refreshToken string) (err error) {
 
 func (s *UserService) RefreshToken(userId string, refreshToken string) (accessToken string, err error) {
 	// Search session in database by user id and refresh token
+	err = s.UserRepository.FindByIdAndRefreshToken(userId, refreshToken)
+	if err != nil {
+		return "", errors.New("session not found")
+	}
 
 	// Generate access token with user id
 	accessToken, err = s.Jwt.GenerateToken(userId, s.Jwt.ExpirationTimeAccess)
 	if err != nil {
-		return "", err
+		return "", errors.New("cannot generate access token")
 	}
 
 	// Update session in database with access token
@@ -272,10 +288,22 @@ func (s *UserService) ForgotPassword(email string) (err error) {
 
 func (s *UserService) ResetPassword(userId string, resetPasswordToken string, password string) (err error) {
 	// Search user in database by userId and reset password token
+	err = s.UserRepository.FindByIdAndRefreshToken(userId, resetPasswordToken)
+	if err != nil {
+		return errors.New("user not found")
+	}
 
 	// Encrypt password with bcrypt
+	hashedPassword, err := s.Bcrypt.HashPassword(password)
+	if err != nil {
+		return errors.New("cannot encrypt password")
+	}
 
 	// Update password in database
+	err = s.UserRepository.UpdatePassword(userId, hashedPassword)
+	if err != nil {
+		return errors.New("cannot update password")
+	}
 
 	// Send email with reset password confirmation
 	err = s.Email.Add(utils.Email{
@@ -301,15 +329,24 @@ func (s *UserService) VerifyEmail(userId string) (err error) {
 	if err != nil {
 		return errors.New("user not found")
 	}
+
+	// If user is already verified then return error
+	if user.Verified {
+		return errors.New("user already verified")
+	}
+
 	// Update user verified in database
-	fmt.Println(user)
+	err = s.UserRepository.VerifyEmail(userId)
+	if err != nil {
+		return errors.New("cannot update user verified")
+	}
 
 	// Send email with email verification confirmation
 	err = s.Email.Add(utils.Email{
 		From:    s.Email.From,
 		To:      []string{""},
 		Subject: "Email verification confirmation",
-		Body:    "<h1>Email verification confirmation</h1>",
+		Body:    "<h1>Welcome to the club buddy</h1>",
 	})
 	if err != nil {
 		return err
@@ -326,9 +363,18 @@ func (s *UserService) ResendEmailVerification(email string) (err error) {
 	}
 
 	// If user is verified then return error
+	if user.Verified {
+		return errors.New("user is already verified")
+	}
 
 	// Generate email verification token with user id
 	emailVerificationToken, err := s.Jwt.GenerateToken(user.ID, s.Jwt.ExpirationTimeEmailVerification)
+	if err != nil {
+		return err
+	}
+
+	// Save email verification token in database
+	err = s.UserRepository.CreateEmailVerificationToken(user.ID, emailVerificationToken)
 	if err != nil {
 		return err
 	}
