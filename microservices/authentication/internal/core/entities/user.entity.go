@@ -49,7 +49,7 @@ type Reset struct {
 type Session struct {
 	Type         string    `json:"type"`
 	Ip           string    `json:"ip"`
-	Agent        string    `json:"location"`
+	Agent        string    `json:"agent"`
 	AccessToken  string    `json:"accessToken"`
 	RefreshToken string    `json:"refreshToken"`
 	ExpiresAt    time.Time `json:"expiresAt"`
