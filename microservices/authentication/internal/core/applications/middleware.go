@@ -1,7 +1,7 @@
 package applications
 
 import (
-	"fmt"
+	"context"
 	"github.com/Lenstack/lensaas-server/microservices/authentication/internal/utils"
 	"github.com/gorilla/csrf"
 	"github.com/gorilla/securecookie"
@@ -20,20 +20,23 @@ func (m *Microservice) MiddlewareAuth(next http.Handler) http.Handler {
 		accessToken, err := cookieStore.GetCookieDecrypted(req, cookieStore.AccessTokenCookieName)
 		if err != nil {
 			m.Log.Error("Error getting access token from cookie", zap.Error(err))
-			wr.WriteHeader(http.StatusBadRequest)
+			wr.WriteHeader(http.StatusUnauthorized)
 			return
 		}
 
 		// Validate access token
 		userId, err := m.Jwt.ValidateToken(accessToken)
 		if err != nil {
-			m.Log.Error("Error validating access token", zap.Error(err))
-			wr.WriteHeader(http.StatusBadRequest)
+			m.Log.Error("Unauthorized", zap.Error(err))
+			wr.WriteHeader(http.StatusUnauthorized)
 			return
 		}
 
 		// Set user id in context
-		fmt.Println("User id: ", userId)
+		ctx := req.Context()
+		ctx = context.WithValue(ctx, "userId", userId)
+		req = req.WithContext(ctx)
+
 		next.ServeHTTP(wr, req)
 	})
 }
