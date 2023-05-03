@@ -1,7 +1,6 @@
 package repositories
 
 import (
-	"fmt"
 	"github.com/Lenstack/lensaas-server/microservices/authentication/internal/core/entities"
 	"github.com/surrealdb/surrealdb.go"
 )
@@ -10,8 +9,9 @@ type IUserRepository interface {
 	Find() (users []entities.User, err error)
 	FindById(userId string) (user entities.User, err error)
 	FindByEmail(email string) (user entities.User, err error)
-	FindRefreshToken(refreshToken string) (user entities.User, err error)
-	Create(user entities.User) (userData entities.User, err error)
+	Create(user entities.User) (err error)
+	CreateVerificationToken(userId string, token string) (err error)
+	CreateResetPasswordToken(userId string, token string) (err error)
 	UpdateLastSignIn(userId string) (err error)
 }
 
@@ -20,30 +20,26 @@ type UserRepository struct {
 }
 
 func (r *UserRepository) Find() (users []entities.User, err error) {
-	response, err := r.Database.Select("SELECT * FROM users")
-	if err != nil {
-		return nil, err
-	}
-
-	fmt.Println(response)
 	return users, nil
 }
 
 func (r *UserRepository) FindById(userId string) (user entities.User, err error) {
-	return entities.User{}, nil
+	return user, nil
 }
 
 func (r *UserRepository) FindByEmail(email string) (user entities.User, err error) {
-	return entities.User{}, nil
+	return user, nil
 }
 
 func (r *UserRepository) Create(user entities.User) (err error) {
-	data, err := r.Database.Create(entities.UserTableName, user)
-	if err != nil {
-		return err
-	}
+	return nil
+}
 
-	fmt.Println(data)
+func (r *UserRepository) CreateVerificationToken(userId string, token string) (err error) {
+	return nil
+}
+
+func (r *UserRepository) CreateResetPasswordToken(userId string, token string) (err error) {
 	return nil
 }
 

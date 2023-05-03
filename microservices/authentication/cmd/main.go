@@ -12,17 +12,18 @@ func main() {
 	// Load environment variables
 	infrastructure.NewLoadEnv()
 	var (
-		AppEnvironment         = viper.GetString("APP_ENVIRONMENT")
-		AppPort                = viper.GetString("APP_PORT")
-		JwtSecret              = viper.GetString("JWT_SECRET")
-		JwtAccessExpirationIn  = viper.GetString("JWT_ACCESS_EXPIRATION_IN")
-		JwtRefreshExpirationIn = viper.GetString("JWT_REFRESH_EXPIRATION_IN")
+		AppEnvironment               = viper.GetString("APP_ENVIRONMENT")
+		AppPort                      = viper.GetString("APP_PORT")
+		JwtSecret                    = viper.GetString("JWT_SECRET")
+		JwtAccessExpirationIn        = viper.GetString("JWT_ACCESS_EXPIRATION_IN")
+		JwtRefreshExpirationIn       = viper.GetString("JWT_REFRESH_EXPIRATION_IN")
+		JwtResetPasswordExpirationIn = viper.GetString("JWT_RESET_PASSWORD_EXPIRATION_IN")
 	)
 
 	// Initialize logger, database, jwt and other infrastructure
 	logger := infrastructure.NewLogger(AppEnvironment)
 	surrealDB := infrastructure.NewSurrealDB(logger)
-	jwt := utils.NewJwt(JwtSecret, JwtAccessExpirationIn, JwtRefreshExpirationIn)
+	jwt := utils.NewJwt(JwtSecret, JwtAccessExpirationIn, JwtRefreshExpirationIn, JwtResetPasswordExpirationIn)
 	bcrypt := utils.NewBcrypt()
 	email := utils.NewEmail()
 

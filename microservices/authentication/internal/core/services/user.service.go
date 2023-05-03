@@ -214,36 +214,53 @@ func (s *UserService) SignUp(name string, email string, password string) (err er
 	return nil
 }
 
-func (s *UserService) SignOut(userId string) (err error) {
-	// Search and revoke access, refresh token from database
+func (s *UserService) SignOut(userId string, refreshToken string) (err error) {
+	// Search session in database by user id and refresh token
+
+	// Revoked refresh token in database
+
 	return nil
 }
 
 func (s *UserService) RefreshToken(userId string, refreshToken string) (accessToken string, err error) {
-	// Search refresh token from database
+	// Search session in database by user id and refresh token
 
-	// Generate access token
+	// Generate access token with user id
 	accessToken, err = s.Jwt.GenerateToken(userId, s.Jwt.ExpirationTimeAccess)
 	if err != nil {
 		return "", err
 	}
 
-	// Revoked refresh token in database
+	// Update session in database with access token
 
 	return accessToken, nil
 }
 
 func (s *UserService) ForgotPassword(email string) (err error) {
 	// Search user in database by email
+	userByEmail, err := s.UserRepository.FindByEmail(email)
+	if err != nil {
+		return err
+	}
 
 	// Generate reset password token
+	resetPasswordToken, err := s.Jwt.GenerateToken(userByEmail.ID, s.Jwt.ExpirationTimeResetPassword)
+	if err != nil {
+		return err
+	}
+
+	// Create reset password token in database
+	err = s.UserRepository.CreateResetPasswordToken(userByEmail.ID, resetPasswordToken)
+	if err != nil {
+		return err
+	}
 
 	// Send email with reset password token
 	err = s.Email.Add(utils.Email{
 		From:    s.Email.From,
 		To:      []string{email},
 		Subject: "Reset password",
-		Body:    "<h1>Reset password</h1>",
+		Body:    "<h1>Reset password</h1>" + resetPasswordToken,
 	})
 	if err != nil {
 		return err
@@ -252,8 +269,10 @@ func (s *UserService) ForgotPassword(email string) (err error) {
 	return nil
 }
 
-func (s *UserService) ResetPassword(userId string, password string) (err error) {
-	// Search user in database by userId
+func (s *UserService) ResetPassword(userId string, resetPasswordToken string, password string) (err error) {
+	// Search user in database by userId and reset password token
+
+	// Encrypt password with bcrypt
 
 	// Update password in database
 

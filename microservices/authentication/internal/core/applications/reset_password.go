@@ -9,7 +9,9 @@ import (
 )
 
 func (m *Microservice) ResetPassword(wr http.ResponseWriter, req *http.Request) {
+	// Initialize reset password request body
 	body := &models.ResetPasswordRequest{}
+
 	// Decode reset password request body
 	err := json.NewDecoder(req.Body).Decode(body)
 	if err != nil {
@@ -45,7 +47,7 @@ func (m *Microservice) ResetPassword(wr http.ResponseWriter, req *http.Request) 
 	}
 
 	// Reset password
-	err = m.UserService.ResetPassword(userId, body.Password)
+	err = m.UserService.ResetPassword(userId, body.Token, body.Password)
 	if err != nil {
 		m.Log.Error("Error resetting password", zap.Error(err))
 		wr.WriteHeader(http.StatusBadRequest)

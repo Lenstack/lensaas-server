@@ -11,24 +11,34 @@ type IJwt interface {
 }
 
 type Jwt struct {
-	Secret                string
-	ExpirationTimeAccess  time.Duration
-	ExpirationTimeRefresh time.Duration
+	Secret                      string
+	ExpirationTimeAccess        time.Duration
+	ExpirationTimeRefresh       time.Duration
+	ExpirationTimeResetPassword time.Duration
 }
 
-func NewJwt(secret string, expirationAccess string, expirationRefresh string) *Jwt {
+func NewJwt(secret string, expirationAccess string, expirationRefresh string, expirationResetPassword string) *Jwt {
+	// Parse expiration time from string to time.Duration
 	expirationTimeAccess, err := time.ParseDuration(expirationAccess)
 	if err != nil {
 		panic(err)
 	}
+	// Parse expiration time from string to time.Duration
 	expirationTimeRefresh, err := time.ParseDuration(expirationRefresh)
 	if err != nil {
 		panic(err)
 	}
+	// Parse expiration time from string to time.Duration
+	expirationTimeResetPassword, err := time.ParseDuration(expirationResetPassword)
+	if err != nil {
+		panic(err)
+	}
+	// Return Jwt instance with parsed expiration time initialized
 	return &Jwt{
-		Secret:                secret,
-		ExpirationTimeAccess:  expirationTimeAccess,
-		ExpirationTimeRefresh: expirationTimeRefresh,
+		Secret:                      secret,
+		ExpirationTimeAccess:        expirationTimeAccess,
+		ExpirationTimeRefresh:       expirationTimeRefresh,
+		ExpirationTimeResetPassword: expirationTimeResetPassword,
 	}
 }
 
