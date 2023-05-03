@@ -16,6 +16,7 @@ func (m *Microservice) MiddlewareAuth(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(wr http.ResponseWriter, req *http.Request) {
 		// Create cookie store
 		cookieStore := utils.NewCookieStore()
+
 		// Get access token from cookie
 		accessToken, err := cookieStore.GetCookieDecrypted(req, cookieStore.AccessTokenCookieName)
 		if err != nil {
@@ -24,7 +25,7 @@ func (m *Microservice) MiddlewareAuth(next http.Handler) http.Handler {
 			return
 		}
 
-		// Validate access token
+		// Validate access token and get userId
 		userId, err := m.Jwt.ValidateToken(accessToken)
 		if err != nil {
 			m.Log.Error("Unauthorized", zap.Error(err))
@@ -32,7 +33,7 @@ func (m *Microservice) MiddlewareAuth(next http.Handler) http.Handler {
 			return
 		}
 
-		// Set user id in context
+		// Set the userId in the request context
 		ctx := req.Context()
 		ctx = context.WithValue(ctx, "userId", userId)
 		req = req.WithContext(ctx)
