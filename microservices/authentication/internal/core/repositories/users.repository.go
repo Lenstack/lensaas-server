@@ -16,6 +16,7 @@ type IUserRepository interface {
 	UpdateLastSignIn(userId string) (err error)
 	UpdatePassword(userId string, password string) (err error)
 	VerifyEmail(userId string) (err error)
+	RevokeRefreshToken(userId string, refreshToken string) (err error)
 }
 
 type UserRepository struct {
@@ -59,5 +60,9 @@ func (r *UserRepository) UpdatePassword(userId string, password string) (err err
 }
 
 func (r *UserRepository) VerifyEmail(userId string) (err error) {
+	return nil
+}
+
+func (r *UserRepository) RevokeRefreshToken(userId string, refreshToken string) (err error) {
 	return nil
 }

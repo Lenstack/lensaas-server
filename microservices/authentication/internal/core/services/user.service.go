@@ -1,6 +1,7 @@
 package services
 
 import (
+	"context"
 	"encoding/json"
 	"errors"
 	"fmt"
@@ -9,6 +10,7 @@ import (
 	"github.com/Lenstack/lensaas-server/microservices/authentication/internal/utils"
 	"github.com/surrealdb/surrealdb.go"
 	"golang.org/x/oauth2"
+	"io"
 )
 
 type IUserService interface {
@@ -23,6 +25,8 @@ type IUserService interface {
 	Me(userId string) (user entities.User, err error)
 	VerifyEmail(userId string) (err error)
 	ResendEmailVerification(email string) (err error)
+	GenerateMFAQRCode(userId string) (qrCode string, err error)
+	EnableMFA(userId string, code string) (err error)
 }
 
 type UserService struct {
@@ -117,19 +121,24 @@ func (s *UserService) SignInWithOAuthCallback(provider string, code string) (acc
 	}
 
 	// Exchange auth code for token
-	token, err := s.OauthClientConfig.Exchange(oauth2.NoContext, code)
+	token, err := s.OauthClientConfig.Exchange(context.Background(), code)
 	if err != nil {
 		return "", "", errors.New("cannot exchange auth code for token")
 	}
 
 	// Get user information from oauth provider
-	response, err := s.OauthClientConfig.Client(oauth2.NoContext, token).Get(oauthProvider.Config.UserInfoUrl) // get url from oauth provider
+	response, err := s.OauthClientConfig.Client(context.Background(), token).Get(oauthProvider.Config.UserInfoUrl) // get url from oauth provider
 	if err != nil {
 		return "", "", errors.New("cannot get user info from oauth provider")
 	}
 
 	// Close response body
-	defer response.Body.Close()
+	defer func(Body io.ReadCloser) {
+		err := Body.Close()
+		if err != nil {
+			return
+		}
+	}(response.Body)
 
 	// Decode user information
 	var userInformation map[string]interface{}
@@ -229,9 +238,15 @@ func (s *UserService) SignUp(name string, email string, password string) (err er
 
 func (s *UserService) SignOut(userId string, refreshToken string) (err error) {
 	// Search session in database by user id and refresh token
-
+	err = s.UserRepository.FindByIdAndRefreshToken(userId, refreshToken)
+	if err != nil {
+		return errors.New("session not found")
+	}
 	// Revoked refresh token in database
-
+	err = s.UserRepository.RevokeRefreshToken(userId, refreshToken)
+	if err != nil {
+		return errors.New("cannot revoke refresh token")
+	}
 	return nil
 }
 
@@ -390,5 +405,28 @@ func (s *UserService) ResendEmailVerification(email string) (err error) {
 		return err
 	}
 
+	return nil
+}
+
+func (s *UserService) GenerateMFAQRCode(userId string) (qrCode string, err error) {
+	// Search user in database by userId
+	user, err := s.UserRepository.FindById(userId)
+	if err != nil {
+		return "", errors.New("user not found")
+	}
+
+	fmt.Println(user.Email)
+
+	// Generate MFA QR Code
+	/*
+		qrCode, err = s.MFA.GenerateQRCode(user.Email, user.MFASecret)
+		if err != nil {
+			return "", errors.New("cannot generate MFA QR Code")
+		}
+	*/
+	return qrCode, nil
+}
+
+func (s *UserService) EnableMFA(userId string, code string) (err error) {
 	return nil
 }
