@@ -22,6 +22,7 @@ type IUserService interface {
 	ResetPassword(userId string, password string) (err error)
 	Me(userId string) (user entities.User, err error)
 	VerifyEmail(userId string) (err error)
+	ResendEmailVerification(email string) (err error)
 }
 
 type UserService struct {
@@ -309,6 +310,35 @@ func (s *UserService) VerifyEmail(userId string) (err error) {
 		To:      []string{""},
 		Subject: "Email verification confirmation",
 		Body:    "<h1>Email verification confirmation</h1>",
+	})
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (s *UserService) ResendEmailVerification(email string) (err error) {
+	// Search user in database by userId
+	user, err := s.UserRepository.FindById(email)
+	if err != nil {
+		return errors.New("user not found")
+	}
+
+	// If user is verified then return error
+
+	// Generate email verification token with user id
+	emailVerificationToken, err := s.Jwt.GenerateToken(user.ID, s.Jwt.ExpirationTimeEmailVerification)
+	if err != nil {
+		return err
+	}
+
+	// Create email verification and add to queue
+	err = s.Email.Add(utils.Email{
+		From:    s.Email.From,
+		To:      []string{user.Email},
+		Subject: "Verify email",
+		Body:    "<h1>Verify email</h1>" + emailVerificationToken,
 	})
 	if err != nil {
 		return err
