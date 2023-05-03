@@ -41,6 +41,7 @@ func (m *Microservice) SignUp(wr http.ResponseWriter, req *http.Request) {
 		err = json.NewEncoder(wr).Encode(&models.ErrorResponse{Code: http.StatusBadRequest, Message: err.Error()})
 		if err != nil {
 			m.Log.Error("Error encoding sign in response", zap.Error(err))
+			return
 		}
 		return
 	}

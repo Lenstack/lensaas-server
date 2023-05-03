@@ -192,18 +192,10 @@ func (s *UserService) SignUp(name string, email string, password string) (err er
 		Profile:  entities.Profile{Name: name},
 		Email:    email,
 		Password: hashedPassword,
-		Roles: []entities.Role{
-			{
-				Name: "user",
-				Permissions: []entities.Permission{
-					{Scope: "users", Action: "update"},
-					{Scope: "users", Action: "delete"},
-					{Scope: "users", Action: "create"},
-					{Scope: "users", Action: "list"},
-				},
-			},
-		},
 	})
+	if err != nil {
+		return err
+	}
 
 	// Create email verification and add to queue
 	err = s.Email.Add(utils.Email{
