@@ -9,7 +9,10 @@ import (
 )
 
 func (m *Microservice) RefreshToken(wr http.ResponseWriter, req *http.Request) {
+	// Initialize cookie store
 	cookieStore := utils.NewCookieStore()
+
+	// Get refresh token from cookie
 	refreshToken, err := cookieStore.GetCookieDecrypted(req, cookieStore.RefreshTokenCookieName)
 	if err != nil {
 		wr.WriteHeader(http.StatusBadRequest)
@@ -20,6 +23,7 @@ func (m *Microservice) RefreshToken(wr http.ResponseWriter, req *http.Request) {
 		return
 	}
 
+	// Validate refresh token
 	userId, err := m.Jwt.ValidateToken(refreshToken)
 	if err != nil {
 		wr.WriteHeader(http.StatusBadRequest)
@@ -30,7 +34,8 @@ func (m *Microservice) RefreshToken(wr http.ResponseWriter, req *http.Request) {
 		return
 	}
 
-	accessToken, err := m.UserService.RefreshToken(userId)
+	// Refresh token and get new access token
+	accessToken, err := m.UserService.RefreshToken(userId, refreshToken)
 	if err != nil {
 		wr.WriteHeader(http.StatusBadRequest)
 		err = json.NewEncoder(wr).Encode(&models.ErrorResponse{Code: http.StatusBadRequest, Message: err.Error()})
@@ -40,8 +45,10 @@ func (m *Microservice) RefreshToken(wr http.ResponseWriter, req *http.Request) {
 		return
 	}
 
+	// Set access token in cookie
 	cookieStore.SetCookieAccessToken(wr, accessToken)
 
+	// Return response
 	wr.WriteHeader(http.StatusOK)
 	err = json.NewEncoder(wr).Encode(&models.RefreshTokenResponse{Code: http.StatusOK, Message: "Successfully refreshed token"})
 	if err != nil {

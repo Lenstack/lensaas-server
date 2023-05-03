@@ -146,7 +146,7 @@ func (s *UserService) SignInWithOAuthCallback(provider string, code string) (acc
 	// Search user in database by email
 	userByEmail, err := s.UserRepository.FindByEmail(information.Email)
 	if err != nil {
-		return "", "", err
+		return "", "", errors.New("user not found")
 	}
 
 	fmt.Println(userByEmail)
@@ -187,14 +187,17 @@ func (s *UserService) SignUp(name string, email string, password string) (err er
 		return err
 	}
 
-	// Create user in database
-	err = s.UserRepository.Create(entities.User{
+	// Create user entity
+	user := entities.User{
 		Profile:  entities.Profile{Name: name},
 		Email:    email,
 		Password: hashedPassword,
-	})
+	}
+
+	// Create user in database
+	err = s.UserRepository.Create(user)
 	if err != nil {
-		return err
+		return errors.New("cannot create user")
 	}
 
 	// Create email verification and add to queue
@@ -216,14 +219,16 @@ func (s *UserService) SignOut(userId string) (err error) {
 	return nil
 }
 
-func (s *UserService) RefreshToken(userId string) (accessToken string, err error) {
+func (s *UserService) RefreshToken(userId string, refreshToken string) (accessToken string, err error) {
+	// Search refresh token from database
+
 	// Generate access token
 	accessToken, err = s.Jwt.GenerateToken(userId, s.Jwt.ExpirationTimeAccess)
 	if err != nil {
 		return "", err
 	}
 
-	// Search and revoke access, refresh token from database
+	// Revoked refresh token in database
 
 	return accessToken, nil
 }
