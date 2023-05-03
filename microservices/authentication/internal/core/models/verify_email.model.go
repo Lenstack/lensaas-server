@@ -1,7 +1,7 @@
 package models
 
 type VerifyEmailRequest struct {
-	Email string `json:"email"`
+	Email string `json:"email" validate:"required,email"`
 	Token string `json:"token"`
 }
 
