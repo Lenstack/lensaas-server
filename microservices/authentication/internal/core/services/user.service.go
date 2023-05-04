@@ -27,6 +27,7 @@ type IUserService interface {
 	ResendEmailVerification(email string) (err error)
 	GenerateMFAQRCode(userId string) (qrCode string, err error)
 	EnableMFA(userId string, code string) (err error)
+	CheckEmail(email string) (err error)
 }
 
 type UserService struct {
@@ -428,5 +429,18 @@ func (s *UserService) GenerateMFAQRCode(userId string) (qrCode string, err error
 }
 
 func (s *UserService) EnableMFA(userId string, code string) (err error) {
+	return nil
+}
+
+func (s *UserService) DisableMFA(userId string, code string) (err error) {
+	return nil
+}
+
+func (s *UserService) VerifyMFA(userId string, code string) (err error) {
+	return nil
+}
+
+func (s *UserService) CheckEmail(email string) (err error) {
+	// Search user in database by email
 	return nil
 }
