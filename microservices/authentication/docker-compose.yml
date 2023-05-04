@@ -6,13 +6,28 @@ services:
     command: start --log trace --user startup --pass eHmBXR+0O38Q6HixRmTh+u7t2MT+yXHrE3M52UAh6vU= file:data/surrealdb.db
     restart: always
     ports:
-      - 8000:8000
+      - '8000:8000'
     volumes:
       - surrealdb-data:/data
     networks:
-      - surrealdb-network
+      - app-network
+  redis:
+    container_name: redis
+    image: redis/redis-stack:latest
+    restart: always
+    ports:
+      - '6379:6379'
+    networks:
+      - app-network
+    environment:
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+      - REDIS_PASSWORD=redis
+    volumes:
+      - redis-data:/data
 volumes:
   surrealdb-data:
+  redis-data:
 networks:
-  surrealdb-network:
+  app-network:
     driver: bridge
