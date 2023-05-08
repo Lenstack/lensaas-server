@@ -17,6 +17,8 @@ type IUserRepository interface {
 	UpdatePassword(userId string, password string) (err error)
 	VerifyEmail(userId string) (err error)
 	RevokeRefreshToken(userId string, refreshToken string) (err error)
+	EnableMFA(userId string) (err error)
+	DisableMFA(userId string) (err error)
 }
 
 type UserRepository struct {
@@ -64,5 +66,13 @@ func (r *UserRepository) VerifyEmail(userId string) (err error) {
 }
 
 func (r *UserRepository) RevokeRefreshToken(userId string, refreshToken string) (err error) {
+	return nil
+}
+
+func (r *UserRepository) EnableMFA(userId string) (err error) {
+	return nil
+}
+
+func (r *UserRepository) DisableMFA(userId string) (err error) {
 	return nil
 }

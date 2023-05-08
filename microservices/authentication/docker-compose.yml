@@ -1,5 +1,17 @@
 version: '3.8'
 services:
+  app:
+    container_name: app
+    build: .
+    ports:
+      - '${APP_PORT}:${APP_PORT}'
+    networks:
+      - app-network
+    depends_on:
+      - surrealdb
+      - redis
+    env_file:
+      - .env
   surrealdb:
     image: surrealdb/surrealdb:latest
     container_name: surrealdb

@@ -7,5 +7,4 @@ type MFAEnableRequest struct {
 type MFAEnableResponse struct {
 	Code    int    `json:"code"`
 	Message string `json:"message"`
-	QRCode  string `json:"qr_code"`
 }

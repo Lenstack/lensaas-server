@@ -25,8 +25,9 @@ type IUserService interface {
 	Me(userId string) (user entities.User, err error)
 	VerifyEmail(userId string) (err error)
 	ResendEmailVerification(email string) (err error)
-	GenerateMFAQRCode(userId string) (qrCode string, err error)
-	EnableMFA(userId string, code string) (err error)
+	MFAGenerate(userId string) (qrCode string, err error)
+	MFAEnable(userId string) (qrCode string, err error)
+	MFADisable(userId string, code string) (err error)
 	CheckEmail(email string) (err error)
 }
 
@@ -409,38 +410,67 @@ func (s *UserService) ResendEmailVerification(email string) (err error) {
 	return nil
 }
 
-func (s *UserService) GenerateMFAQRCode(userId string) (qrCode string, err error) {
+func (s *UserService) MFAGenerate(userId string) (qrCode string, token string, err error) {
 	// Search user in database by userId
 	user, err := s.UserRepository.FindById(userId)
 	if err != nil {
-		return "", errors.New("user not found")
+		return "", "", errors.New("user not found")
 	}
 
 	fmt.Println(user.Email)
 
+	// Generate MFA QR Code and code
+
+	// Save MFA code in database
+
+	return qrCode, token, nil
+}
+
+func (s *UserService) MFAEnable(userId string) (err error) {
+	// Search user in database by userId
+	user, err := s.UserRepository.FindById(userId)
+	if err != nil {
+		return errors.New("user not found")
+	}
+
+	// Generate secret for MFA and save in database
+	fmt.Println(user.Email)
 	// Generate MFA QR Code
-	/*
-		qrCode, err = s.MFA.GenerateQRCode(user.Email, user.MFASecret)
-		if err != nil {
-			return "", errors.New("cannot generate MFA QR Code")
-		}
-	*/
-	return qrCode, nil
-}
 
-func (s *UserService) EnableMFA(userId string, code string) (err error) {
+	// Enable MFA in database
+	err = s.UserRepository.EnableMFA(userId)
+	if err != nil {
+		return errors.New("cannot enable MFA")
+	}
+
 	return nil
 }
 
-func (s *UserService) DisableMFA(userId string, code string) (err error) {
-	return nil
-}
+func (s *UserService) MFADisable(userId string, code string) (err error) {
+	// Search user in database by userId
+	user, err := s.UserRepository.FindById(userId)
+	if err != nil {
+		return errors.New("user not found")
+	}
 
-func (s *UserService) VerifyMFA(userId string, code string) (err error) {
+	// Verify MFA code
+	fmt.Println(user.Email)
+
+	// Disable MFA in database
+	err = s.UserRepository.DisableMFA(userId)
+	if err != nil {
+		return errors.New("cannot disable MFA")
+	}
+
 	return nil
 }
 
 func (s *UserService) CheckEmail(email string) (err error) {
 	// Search user in database by email
+	_, err = s.UserRepository.FindByEmail(email)
+	if err != nil {
+		return errors.New("user not found")
+	}
+
 	return nil
 }

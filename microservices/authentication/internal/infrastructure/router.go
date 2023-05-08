@@ -31,6 +31,7 @@ func NewRouter(microservice applications.Microservice) *Router {
 	authentication.HandleFunc("/verify_email", microservice.VerifyEmail).Methods(http.MethodGet)
 	authentication.HandleFunc("/resend_email_verification", microservice.ResendEmailVerification).Methods(http.MethodPost)
 
+	authentication.HandleFunc("/mfa_generate", microservice.MFAGenerate).Methods(http.MethodPost)
 	authentication.HandleFunc("/mfa_enable", microservice.MFAEnable).Methods(http.MethodPost)
 	authentication.HandleFunc("/mfa_disable", microservice.MFADisable).Methods(http.MethodPost)
 	authentication.HandleFunc("/mfa_verify", microservice.MFAVerify).Methods(http.MethodPost)
