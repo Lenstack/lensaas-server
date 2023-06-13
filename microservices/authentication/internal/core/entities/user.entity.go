@@ -20,8 +20,8 @@ type User struct {
 	Resets     []Reset   `json:"resets"`
 	Sessions   []Session `json:"sessions"`
 	TotpKeys   []TotpKey `json:"totpKeys"`
-	CreatedAt  time.Time `json:"createdAt"`
-	UpdatedAt  time.Time `json:"updatedAt"`
+	CreatedAt  time.Time `json:"created_at"`
+	UpdatedAt  time.Time `json:"updated_at"`
 }
 
 type Profile struct {

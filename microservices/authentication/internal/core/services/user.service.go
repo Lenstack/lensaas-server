@@ -188,7 +188,10 @@ func (s *UserService) SignInWithOAuthCallback(provider string, code string) (acc
 
 func (s *UserService) SignUp(name string, email string, password string) (err error) {
 	// Search user in database by email
-	userByEmail, _ := s.UserRepository.FindByEmail(email)
+	userByEmail, err := s.UserRepository.FindByEmail(email)
+	if err != nil {
+		return errors.New("cannot find user by email")
+	}
 	if userByEmail.ID != "" {
 		return errors.New("user already exists")
 	}
