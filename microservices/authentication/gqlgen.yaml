@@ -1,0 +1,17 @@
+#  Command: go run github.com/99designs/gqlgen generate
+schema:
+  - graphql/schema.graphqls
+
+exec:
+  filename: graphql/generated/generated.go
+  package: generated
+
+model:
+  filename: graphql/generated/models_gen.go
+  package: generated
+
+resolver:
+  filename: graphql/resolvers/resolver.go
+  package: resolvers
+  dir: graphql/resolvers
+  layout: follow-schema

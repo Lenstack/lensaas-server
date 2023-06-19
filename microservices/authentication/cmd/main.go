@@ -35,7 +35,10 @@ func main() {
 	// Initialize microservices
 	microservices := applications.NewMicroservice(logger, *jwt, *userService)
 
+	// Initialize graphql server
+	graphqlServer := infrastructure.NewGraphqlServer(*microservices)
+
 	// Initialize router and start HTTP server
-	router := infrastructure.NewRouter(*microservices)
+	router := infrastructure.NewRouter(graphqlServer.Handlers, *microservices)
 	infrastructure.NewHttpServer(AppPort, router.Handlers, logger)
 }

@@ -1,0 +1,141 @@
+type Query {
+    Me: User
+}
+
+type Mutation {
+    SignIn(input: SignInRequest!): SignInResponse!
+    SignInCallback(input: SignInCallbackRequest!): SignInCallbackResponse!
+    SignUp(input: SignUpRequest!): SignUpResponse!
+    SignOut: SignOutResponse!
+    ForgotPassword(input: ForgotPasswordRequest!): ForgotPasswordResponse!
+    ResetPassword(input: ResetPasswordRequest!): ResetPasswordResponse!
+    SendVerificationEmail(input: SendVerificationEmailRequest!): SendVerificationEmailResponse!
+    VerifyEmail(input: VerifyEmailRequest!): VerifyEmailResponse!
+    MultiFactor(input: MultiFactorRequest!): MultiFactorResponse!
+    MagicLinkSignIn(input: MagicLinkSignInRequest!): MagicLinkSignInResponse!
+    AiAssistant(input: AiAssistantRequest!): AiAssistantResponse!
+    CheckEmailAvailability(input: CheckEmailAvailabilityRequest!): CheckEmailAvailabilityResponse!
+    RefreshToken: RefreshTokenResponse!
+}
+
+type Subscription {
+    Users: [User!]!
+}
+
+input SignInRequest {
+    email: String!
+    password: String!
+}
+
+type SignInResponse {
+    code: String
+    message: String
+}
+
+input SignInCallbackRequest {
+    email: String!
+    password: String!
+}
+
+type SignInCallbackResponse {
+    code: String
+    message: String
+    redirectUrl: String
+}
+
+input MagicLinkSignInRequest {
+    email: String!
+}
+
+type MagicLinkSignInResponse {
+    error: String
+}
+
+input SignUpRequest {
+    email: String!
+    password: String!
+}
+
+type SignUpResponse {
+    token: String
+    error: String
+}
+
+type SignOutResponse {
+    error: String
+}
+
+input ForgotPasswordRequest {
+    email: String!
+}
+
+input ResetPasswordRequest {
+    email: String!
+    password: String!
+    token: String!
+}
+
+input SendVerificationEmailRequest {
+    email: String!
+}
+
+input VerifyEmailRequest {
+    email: String!
+    token: String!
+}
+
+type ForgotPasswordResponse {
+    error: String
+}
+
+type ResetPasswordResponse {
+    error: String
+}
+
+type SendVerificationEmailResponse {
+    error: String
+}
+
+type VerifyEmailResponse {
+    error: String
+}
+
+
+input MultiFactorRequest {
+    token: String!
+}
+
+type MultiFactorResponse {
+    error: String
+}
+
+input AiAssistantRequest {
+    query: String!
+}
+
+type AiAssistantResponse {
+    code: String
+    message: String
+    response: String
+}
+
+type User {
+    id: ID!
+    email: String!
+}
+
+type RefreshTokenResponse {
+    code: String
+    message: String
+    refreshToken: String
+}
+
+input CheckEmailAvailabilityRequest {
+    email: String!
+}
+
+type CheckEmailAvailabilityResponse {
+    code: String
+    message: String
+    isAvailable: Boolean
+}
