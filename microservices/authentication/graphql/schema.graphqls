@@ -1,14 +1,5 @@
-directive @HasPermission(
-    action: String!
-    resource: String!
-) on FIELD_DEFINITION
-
-directive @HasAuth(
-    scopes: [String!]
-) on FIELD_DEFINITION
-
 type Query {
-    Me: User @HasAuth
+    Me: User!
 }
 
 type Mutation {
