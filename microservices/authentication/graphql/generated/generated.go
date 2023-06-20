@@ -42,6 +42,8 @@ type ResolverRoot interface {
 }
 
 type DirectiveRoot struct {
+	HasAuth       func(ctx context.Context, obj interface{}, next graphql.Resolver, scopes []string) (res interface{}, err error)
+	HasPermission func(ctx context.Context, obj interface{}, next graphql.Resolver, action string, resource string) (res interface{}, err error)
 }
 
 type ComplexityRoot struct {
@@ -522,6 +524,7 @@ func (e *executableSchema) Exec(ctx context.Context) graphql.ResponseHandler {
 		ec.unmarshalInputForgotPasswordRequest,
 		ec.unmarshalInputMagicLinkSignInRequest,
 		ec.unmarshalInputMultiFactorRequest,
+		ec.unmarshalInputPaginationInput,
 		ec.unmarshalInputResetPasswordRequest,
 		ec.unmarshalInputSendVerificationEmailRequest,
 		ec.unmarshalInputSignInCallbackRequest,
@@ -642,7 +645,16 @@ func (ec *executionContext) introspectType(name string) (*introspection.Type, er
 }
 
 var sources = []*ast.Source{
-	{Name: "../schema.graphqls", Input: `type Query {
+	{Name: "../schema.graphqls", Input: `directive @HasPermission(
+    action: String!
+    resource: String!
+) on FIELD_DEFINITION
+
+directive @HasAuth(
+    scopes: [String!]
+) on FIELD_DEFINITION
+
+type Query {
     Me: User
 }
 
@@ -664,6 +676,12 @@ type Mutation {
 
 type Subscription {
     Users: [User!]!
+}
+
+#Pagination
+input PaginationInput {
+    limit: Int
+    offset: Int
 }
 
 input SignInRequest {
@@ -789,6 +807,45 @@ var parsedSchema = gqlparser.MustLoadSchema(sources...)
 // endregion ************************** generated!.gotpl **************************
 
 // region    ***************************** args.gotpl *****************************
+
+func (ec *executionContext) dir_HasAuth_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	var err error
+	args := map[string]interface{}{}
+	var arg0 []string
+	if tmp, ok := rawArgs["scopes"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("scopes"))
+		arg0, err = ec.unmarshalOString2ᚕstringᚄ(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["scopes"] = arg0
+	return args, nil
+}
+
+func (ec *executionContext) dir_HasPermission_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	var err error
+	args := map[string]interface{}{}
+	var arg0 string
+	if tmp, ok := rawArgs["action"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("action"))
+		arg0, err = ec.unmarshalNString2string(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["action"] = arg0
+	var arg1 string
+	if tmp, ok := rawArgs["resource"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("resource"))
+		arg1, err = ec.unmarshalNString2string(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["resource"] = arg1
+	return args, nil
+}
 
 func (ec *executionContext) field_Mutation_AiAssistant_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
@@ -4962,6 +5019,44 @@ func (ec *executionContext) unmarshalInputMultiFactorRequest(ctx context.Context
 	return it, nil
 }
 
+func (ec *executionContext) unmarshalInputPaginationInput(ctx context.Context, obj interface{}) (PaginationInput, error) {
+	var it PaginationInput
+	asMap := map[string]interface{}{}
+	for k, v := range obj.(map[string]interface{}) {
+		asMap[k] = v
+	}
+
+	fieldsInOrder := [...]string{"limit", "offset"}
+	for _, k := range fieldsInOrder {
+		v, ok := asMap[k]
+		if !ok {
+			continue
+		}
+		switch k {
+		case "limit":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("limit"))
+			data, err := ec.unmarshalOInt2ᚖint(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.Limit = data
+		case "offset":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("offset"))
+			data, err := ec.unmarshalOInt2ᚖint(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.Offset = data
+		}
+	}
+
+	return it, nil
+}
+
 func (ec *executionContext) unmarshalInputResetPasswordRequest(ctx context.Context, obj interface{}) (ResetPasswordRequest, error) {
 	var it ResetPasswordRequest
 	asMap := map[string]interface{}{}
@@ -6891,6 +6986,60 @@ func (ec *executionContext) marshalOBoolean2ᚖbool(ctx context.Context, sel ast
 	}
 	res := graphql.MarshalBoolean(*v)
 	return res
+}
+
+func (ec *executionContext) unmarshalOInt2ᚖint(ctx context.Context, v interface{}) (*int, error) {
+	if v == nil {
+		return nil, nil
+	}
+	res, err := graphql.UnmarshalInt(v)
+	return &res, graphql.ErrorOnPath(ctx, err)
+}
+
+func (ec *executionContext) marshalOInt2ᚖint(ctx context.Context, sel ast.SelectionSet, v *int) graphql.Marshaler {
+	if v == nil {
+		return graphql.Null
+	}
+	res := graphql.MarshalInt(*v)
+	return res
+}
+
+func (ec *executionContext) unmarshalOString2ᚕstringᚄ(ctx context.Context, v interface{}) ([]string, error) {
+	if v == nil {
+		return nil, nil
+	}
+	var vSlice []interface{}
+	if v != nil {
+		vSlice = graphql.CoerceList(v)
+	}
+	var err error
+	res := make([]string, len(vSlice))
+	for i := range vSlice {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithIndex(i))
+		res[i], err = ec.unmarshalNString2string(ctx, vSlice[i])
+		if err != nil {
+			return nil, err
+		}
+	}
+	return res, nil
+}
+
+func (ec *executionContext) marshalOString2ᚕstringᚄ(ctx context.Context, sel ast.SelectionSet, v []string) graphql.Marshaler {
+	if v == nil {
+		return graphql.Null
+	}
+	ret := make(graphql.Array, len(v))
+	for i := range v {
+		ret[i] = ec.marshalNString2string(ctx, sel, v[i])
+	}
+
+	for _, e := range ret {
+		if e == graphql.Null {
+			return graphql.Null
+		}
+	}
+
+	return ret
 }
 
 func (ec *executionContext) unmarshalOString2ᚖstring(ctx context.Context, v interface{}) (*string, error) {

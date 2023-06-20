@@ -46,6 +46,11 @@ type MultiFactorResponse struct {
 	Error *string `json:"error,omitempty"`
 }
 
+type PaginationInput struct {
+	Limit  *int `json:"limit,omitempty"`
+	Offset *int `json:"offset,omitempty"`
+}
+
 type RefreshTokenResponse struct {
 	Code         *string `json:"code,omitempty"`
 	Message      *string `json:"message,omitempty"`

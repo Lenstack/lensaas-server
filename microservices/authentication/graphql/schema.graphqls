@@ -1,5 +1,14 @@
+directive @HasPermission(
+    action: String!
+    resource: String!
+) on FIELD_DEFINITION
+
+directive @HasAuth(
+    scopes: [String!]
+) on FIELD_DEFINITION
+
 type Query {
-    Me: User
+    Me: User @HasAuth
 }
 
 type Mutation {
@@ -20,6 +29,12 @@ type Mutation {
 
 type Subscription {
     Users: [User!]!
+}
+
+#Pagination
+input PaginationInput {
+    limit: Int
+    offset: Int
 }
 
 input SignInRequest {
