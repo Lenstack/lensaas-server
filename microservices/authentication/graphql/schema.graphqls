@@ -1,5 +1,13 @@
 type Query {
     Me: User!
+    Users: [User!]!
+    Organizations: [Organization!]!
+    Members: [Member!]!
+    Sessions: [Session!]!
+    Roles: [Role!]!
+    Permissions: [Permission!]!
+    Plans: [Plan!]!
+    Settings: [Setting!]!
 }
 
 type Mutation {
@@ -19,7 +27,7 @@ type Mutation {
 }
 
 type Subscription {
-    Users: [User!]!
+    Logs: Log!
 }
 
 #Pagination
@@ -29,13 +37,14 @@ input PaginationInput {
 }
 
 input SignInRequest {
-    email: String!
-    password: String!
+    email: String
+    password: String
 }
 
 type SignInResponse {
     code: String
     message: String
+    token: String
 }
 
 input SignInCallbackRequest {
@@ -144,4 +153,36 @@ type CheckEmailAvailabilityResponse {
     code: String
     message: String
     isAvailable: Boolean
+}
+
+type Organization {
+    id: ID!
+}
+
+type Member {
+    id: ID!
+}
+
+type Session {
+    id: ID!
+}
+
+type Role {
+    id: ID!
+}
+
+type Permission {
+    id: ID!
+}
+
+type Plan {
+    id: ID!
+}
+
+type Setting{
+    id: ID!
+}
+
+type Log {
+    id: ID!
 }

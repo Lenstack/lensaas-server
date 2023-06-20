@@ -30,12 +30,20 @@ type ForgotPasswordResponse struct {
 	Error *string `json:"error,omitempty"`
 }
 
+type Log struct {
+	ID string `json:"id"`
+}
+
 type MagicLinkSignInRequest struct {
 	Email string `json:"email"`
 }
 
 type MagicLinkSignInResponse struct {
 	Error *string `json:"error,omitempty"`
+}
+
+type Member struct {
+	ID string `json:"id"`
 }
 
 type MultiFactorRequest struct {
@@ -46,9 +54,21 @@ type MultiFactorResponse struct {
 	Error *string `json:"error,omitempty"`
 }
 
+type Organization struct {
+	ID string `json:"id"`
+}
+
 type PaginationInput struct {
 	Limit  *int `json:"limit,omitempty"`
 	Offset *int `json:"offset,omitempty"`
+}
+
+type Permission struct {
+	ID string `json:"id"`
+}
+
+type Plan struct {
+	ID string `json:"id"`
 }
 
 type RefreshTokenResponse struct {
@@ -67,12 +87,24 @@ type ResetPasswordResponse struct {
 	Error *string `json:"error,omitempty"`
 }
 
+type Role struct {
+	ID string `json:"id"`
+}
+
 type SendVerificationEmailRequest struct {
 	Email string `json:"email"`
 }
 
 type SendVerificationEmailResponse struct {
 	Error *string `json:"error,omitempty"`
+}
+
+type Session struct {
+	ID string `json:"id"`
+}
+
+type Setting struct {
+	ID string `json:"id"`
 }
 
 type SignInCallbackRequest struct {
@@ -87,13 +119,14 @@ type SignInCallbackResponse struct {
 }
 
 type SignInRequest struct {
-	Email    string `json:"email"`
-	Password string `json:"password"`
+	Email    *string `json:"email,omitempty"`
+	Password *string `json:"password,omitempty"`
 }
 
 type SignInResponse struct {
 	Code    *string `json:"code,omitempty"`
 	Message *string `json:"message,omitempty"`
+	Token   *string `json:"token,omitempty"`
 }
 
 type SignOutResponse struct {

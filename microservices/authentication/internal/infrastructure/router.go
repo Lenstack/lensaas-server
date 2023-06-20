@@ -16,6 +16,7 @@ func NewRouter(handlers *handler.Server, microservice applications.Microservice)
 	router := mux.NewRouter()
 	router.Use(microservice.MiddlewareCORS)
 	router.Use(microservice.MiddlewareLogger)
+	//router.Use(microservice.MiddlewareAuth)
 
 	router.Handle("/", playground.Handler("GraphQL playground", "/query"))
 	router.Handle("/query", handlers)

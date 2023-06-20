@@ -82,8 +82,48 @@ func (r *queryResolver) Me(ctx context.Context) (*generated.User, error) {
 }
 
 // Users is the resolver for the Users field.
-func (r *subscriptionResolver) Users(ctx context.Context) (<-chan []*generated.User, error) {
+func (r *queryResolver) Users(ctx context.Context) ([]*generated.User, error) {
 	panic(fmt.Errorf("not implemented: Users - Users"))
+}
+
+// Organizations is the resolver for the Organizations field.
+func (r *queryResolver) Organizations(ctx context.Context) ([]*generated.Organization, error) {
+	panic(fmt.Errorf("not implemented: Organizations - Organizations"))
+}
+
+// Members is the resolver for the Members field.
+func (r *queryResolver) Members(ctx context.Context) ([]*generated.Member, error) {
+	panic(fmt.Errorf("not implemented: Members - Members"))
+}
+
+// Sessions is the resolver for the Sessions field.
+func (r *queryResolver) Sessions(ctx context.Context) ([]*generated.Session, error) {
+	panic(fmt.Errorf("not implemented: Sessions - Sessions"))
+}
+
+// Roles is the resolver for the Roles field.
+func (r *queryResolver) Roles(ctx context.Context) ([]*generated.Role, error) {
+	panic(fmt.Errorf("not implemented: Roles - Roles"))
+}
+
+// Permissions is the resolver for the Permissions field.
+func (r *queryResolver) Permissions(ctx context.Context) ([]*generated.Permission, error) {
+	panic(fmt.Errorf("not implemented: Permissions - Permissions"))
+}
+
+// Plans is the resolver for the Plans field.
+func (r *queryResolver) Plans(ctx context.Context) ([]*generated.Plan, error) {
+	panic(fmt.Errorf("not implemented: Plans - Plans"))
+}
+
+// Settings is the resolver for the Settings field.
+func (r *queryResolver) Settings(ctx context.Context) ([]*generated.Setting, error) {
+	panic(fmt.Errorf("not implemented: Settings - Settings"))
+}
+
+// Logs is the resolver for the Logs field.
+func (r *subscriptionResolver) Logs(ctx context.Context) (<-chan *generated.Log, error) {
+	panic(fmt.Errorf("not implemented: Logs - Logs"))
 }
 
 // Mutation returns generated.MutationResolver implementation.
