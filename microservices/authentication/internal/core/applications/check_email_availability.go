@@ -8,8 +8,8 @@ import (
 	"net/http"
 )
 
-func (m *Microservice) CheckEmail(wr http.ResponseWriter, req *http.Request) {
-	body := &models.CheckEmailRequest{}
+func (m *Microservice) CheckEmailAvailability(wr http.ResponseWriter, req *http.Request) {
+	body := &models.CheckEmailAvailabilityRequest{}
 	// Decode check email request body
 	err := json.NewDecoder(req.Body).Decode(body)
 	if err != nil {
@@ -46,7 +46,7 @@ func (m *Microservice) CheckEmail(wr http.ResponseWriter, req *http.Request) {
 
 	// Encode check email response
 	wr.WriteHeader(http.StatusOK)
-	err = json.NewEncoder(wr).Encode(&models.CheckEmailResponse{Code: http.StatusOK, Message: "Successfully checked email"})
+	err = json.NewEncoder(wr).Encode(&models.CheckEmailAvailabilityResponse{Code: http.StatusOK, Message: "Successfully checked email"})
 	if err != nil {
 		m.Log.Error("Error encoding check email response", zap.Error(err))
 	}

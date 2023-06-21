@@ -2,6 +2,8 @@ package applications
 
 import (
 	"context"
+	"encoding/json"
+	"github.com/Lenstack/lensaas-server/microservices/authentication/internal/core/models"
 	"github.com/Lenstack/lensaas-server/microservices/authentication/internal/utils"
 	"github.com/gorilla/csrf"
 	"github.com/gorilla/securecookie"
@@ -12,7 +14,7 @@ import (
 	"time"
 )
 
-func (m *Microservice) MiddlewareAuth(next http.Handler) http.Handler {
+func (m *Microservice) MiddlewareAuthentication(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(wr http.ResponseWriter, req *http.Request) {
 		// Create cookie store
 		cookieStore := utils.NewCookieStore()
@@ -22,6 +24,10 @@ func (m *Microservice) MiddlewareAuth(next http.Handler) http.Handler {
 		if err != nil {
 			m.Log.Error("Error getting access token from cookie", zap.Error(err))
 			wr.WriteHeader(http.StatusUnauthorized)
+			err = json.NewEncoder(wr).Encode(&models.ErrorResponse{Code: http.StatusUnauthorized, Message: "Error getting access token from cookie"})
+			if err != nil {
+				m.Log.Error("Error encoding check email response", zap.Error(err))
+			}
 			return
 		}
 
@@ -30,6 +36,10 @@ func (m *Microservice) MiddlewareAuth(next http.Handler) http.Handler {
 		if err != nil {
 			m.Log.Error("Unauthorized", zap.Error(err))
 			wr.WriteHeader(http.StatusUnauthorized)
+			err = json.NewEncoder(wr).Encode(&models.ErrorResponse{Code: http.StatusUnauthorized, Message: "Unauthorized"})
+			if err != nil {
+				m.Log.Error("Error encoding check email response", zap.Error(err))
+			}
 			return
 		}
 

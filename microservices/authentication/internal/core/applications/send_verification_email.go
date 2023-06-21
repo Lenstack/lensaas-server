@@ -8,8 +8,8 @@ import (
 	"net/http"
 )
 
-func (m *Microservice) ResendEmailVerification(wr http.ResponseWriter, req *http.Request) {
-	body := &models.ResendEmailVerificationRequest{}
+func (m *Microservice) SendVerificationEmail(wr http.ResponseWriter, req *http.Request) {
+	body := &models.SendVerificationEmailRequest{}
 	// Decode reset password request body
 	err := json.NewDecoder(req.Body).Decode(body)
 	if err != nil {
@@ -36,7 +36,7 @@ func (m *Microservice) ResendEmailVerification(wr http.ResponseWriter, req *http
 
 	// Encode resend email verification response
 	wr.WriteHeader(http.StatusOK)
-	err = json.NewEncoder(wr).Encode(&models.ResendEmailVerificationResponse{Code: http.StatusOK, Message: "Successfully resent email verification"})
+	err = json.NewEncoder(wr).Encode(&models.SendVerificationEmailResponse{Code: http.StatusOK, Message: "Successfully resent email verification"})
 	if err != nil {
 		m.Log.Error("Error encoding resend email verification response", zap.Error(err))
 	}
