@@ -142,6 +142,7 @@ func (m *Microservice) MiddlewareRecovery(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		defer func() {
 			if err := recover(); err != nil {
+				m.Log.Error("Internal server error", zap.Any("error", err))
 				http.Error(w, "Internal server error", http.StatusInternalServerError)
 			}
 		}()
@@ -155,6 +156,7 @@ func (m *Microservice) MiddlewareRateLimit(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		// Check if the rate limiter allows the request
 		if !limiter.Allow() {
+			m.Log.Warn("Too many requests", zap.String("RemoteAddr", r.RemoteAddr))
 			http.Error(w, "Too many requests", http.StatusTooManyRequests)
 			return
 		}

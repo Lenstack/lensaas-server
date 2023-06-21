@@ -15,6 +15,9 @@ func NewRouter(microservice applications.Microservice) *Router {
 	router.Use(microservice.MiddlewareCORS)
 	router.Use(microservice.MiddlewareCleanPath)
 	router.Use(microservice.MiddlewareAllowContentType)
+	router.Use(microservice.MiddlewareLogger)
+	router.Use(microservice.MiddlewareRateLimit)
+	router.Use(microservice.MiddlewareRecovery)
 
 	public := router.PathPrefix("/v1/").Subrouter()
 	public.HandleFunc("/sign_in", microservice.SignIn).Methods("POST")
@@ -27,15 +30,17 @@ func NewRouter(microservice applications.Microservice) *Router {
 	public.HandleFunc("/verify_email", microservice.VerifyEmail).Methods("POST")
 	public.HandleFunc("/check_email_availability", microservice.CheckEmailAvailability).Methods("POST")
 	public.HandleFunc("/refresh_token", microservice.RefreshToken).Methods("POST")
-	public.HandleFunc("/mfa_enable", microservice.MFAEnable).Methods("POST")
-	public.HandleFunc("/mfa_disable", microservice.MFADisable).Methods("POST")
+	public.HandleFunc("/multi_factor_enable", microservice.MFAEnable).Methods("POST")
+	public.HandleFunc("/multi_factor_disable", microservice.MFADisable).Methods("POST")
+	public.HandleFunc("/multi_factor_generate", microservice.MFAGenerate).Methods("POST")
 
 	private := router.PathPrefix("/v1/").Subrouter()
 	private.Use(microservice.MiddlewareAuthentication)
 	private.HandleFunc("/me", microservice.Me).Methods("GET")
 	private.HandleFunc("/ai_assistant", microservice.AIAssistant).Methods("POST")
+	private.HandleFunc("/web_hook", microservice.WebHook).Methods("POST")
 	private.HandleFunc("/users", microservice.AIAssistant).Methods("GET")
-	private.HandleFunc("/users/{id}", microservice.AIAssistant).Methods("GET")
+	private.HandleFunc("/organizations", microservice.Organizations).Methods("GET")
 
 	return &Router{Handlers: router}
 }
